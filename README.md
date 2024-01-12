@@ -1,7 +1,7 @@
 # isHere
 📁 isHere 앱(Flutter) 스프링 백엔드 구현
 
-# 🌐 Petish: Spring Boot Backend
+# 🌐 ishere: Spring Boot Backend
 
 isHere는 분실물 사례금 어플입니다. 이 저장소는 Petish 앱의 스프링 백엔드 구현 부분을 담고 있습니다.
 
@@ -18,7 +18,7 @@ isHere는 분실물 사례금 어플입니다. 이 저장소는 Petish 앱의 �
 
 저장소를 클론합니다.
 ```bash
-git clone https://github.com/your_username/VRlogy-website-Springboot.git](https://github.com/Logy-CTO/petish-app-back
+git clone https://github.com/your_username/VRlogy-website-Springboot.git](https://github.com/Logy-CTO/ishere-app-back
 Maven을 사용하여 프로젝트를 빌드합니다.
 bash
 Copy code
