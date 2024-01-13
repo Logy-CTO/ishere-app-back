@@ -14,7 +14,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public SignUpDto registerUser(SignUpDto signUpDto) {
+    public User registerUser(SignUpDto signUpDto) {
         // userName, phoneNumber 중복 체크
         if(userRepository.existsByUserName(signUpDto.getUserName())) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
@@ -24,11 +24,8 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("이미 등록된 전화번호입니다.");
         }
 
-        // userName, phoneNumber 이외의 값은 기본값으로 설정
-        User newUser = usermapper.signupDtoToUser(signUpDto);
-        User savedUser = userRepository.save(newUser);
-
-        return usermapper.userToSignUpDto(savedUser);
+        //signupdto -> entity 형변환 후 jpa -> 데이터베이스 저장
+        return userRepository.save(usermapper.signupDtoToUser(signUpDto));
     }
     @Transactional
     @Override
