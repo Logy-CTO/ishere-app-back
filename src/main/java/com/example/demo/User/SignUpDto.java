@@ -1,22 +1,14 @@
 package com.example.demo.User;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Setter
-
-@NoArgsConstructor
-public class SignUpDto extends User {
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
+public class SignUpDto{
     private String userName;
     private String phoneNumber;
-
-    public SignUpDto(String userName,
-                     String phoneNumber) {
-        this.userName = userName;
-        this.phoneNumber = phoneNumber;
-    }
 
 }
