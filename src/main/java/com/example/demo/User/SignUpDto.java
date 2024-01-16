@@ -4,11 +4,15 @@ import lombok.*;
 
 @Getter
 @Setter
-@Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class SignUpDto{
     private String userName;
     private String phoneNumber;
-
+    private Long id;
+    private String accountNumber;
+    private String areaName;
+    private String bankName;
+    private Long interestPost;
+    private String realName;
 }

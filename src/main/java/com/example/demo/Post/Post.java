@@ -1,8 +1,9 @@
 package com.example.demo.Post;
-
+import com.example.demo.User.User;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.persistence.ManyToOne;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -45,6 +46,8 @@ public class Post {
 
     @Column(name = "AREA_NAME")
     private String areaName;
+
+
 
     @Builder
     public Post(int postId,

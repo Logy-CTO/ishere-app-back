@@ -1,11 +1,20 @@
 package com.example.demo.User;
 
 import org.mapstruct.Mapper;
-
+import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
-public interface UserMapper {
-    User signUpDtoToUser(SignUpDto signupDto);
-    SignUpDto userToSignUpDto(User user);
-    User loginDtoToUser(LoginDto loginDto);
+public abstract class UserMapper {
 
+    public User signUpDtoToUser(SignUpDto signupDto) {
+        return User.builder()
+                .id(signupDto.getId() != null ? signupDto.getId() : 0L)
+                .accountNumber(signupDto.getAccountNumber() != null ? signupDto.getAccountNumber() : " ")
+                .areaName(signupDto.getAreaName() != null ? signupDto.getAreaName() : "서울 종로구")
+                .bankName(signupDto.getBankName() != null ? signupDto.getBankName() : " ")
+                .interestPost(signupDto.getInterestPost() != null ? signupDto.getInterestPost() : 0L)
+                .phoneNumber(signupDto.getPhoneNumber())
+                .realName(signupDto.getRealName() != null ? signupDto.getRealName() : " ")
+                .userName(signupDto.getUserName())
+                .build();
+    }
 }

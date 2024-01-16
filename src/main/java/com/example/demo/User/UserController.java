@@ -19,7 +19,16 @@ public class UserController {
     @PostMapping("/register")
     public SignUpDto registerUser(@ModelAttribute SignUpDto signUpDto) {
         User registeredUser = userService.registerUser(signUpDto);
-        return new SignUpDto(registeredUser.getUserName(), registeredUser.getPhoneNumber());
+        return new SignUpDto(
+                registeredUser.getUserName(),
+                registeredUser.getPhoneNumber(),
+                registeredUser.getId(),
+                registeredUser.getAccountNumber(),
+                registeredUser.getAreaName(),
+                registeredUser.getBankName(),
+                registeredUser.getInterestPost(),
+                registeredUser.getRealName()
+        );
     }
     @PostMapping("/login")
     public ResponseEntity<LoginDto> loginUser(@ModelAttribute LoginDto loginDto, HttpSession session) {
