@@ -25,6 +25,8 @@ public class PostDTO {
     private LocalDateTime createdAt;
     private byte transactionStatus;
     private String areaName;
+    private double xLoc;
+    private double yLoc;
 
     @Builder
     public PostDTO(
@@ -38,7 +40,9 @@ public class PostDTO {
             double location,
             LocalDateTime createdAt,
             byte transactionStatus,
-            String areaName
+            String areaName,
+            double xLoc,
+            double yLoc
     )
     {
         this.postId = postId;
@@ -52,6 +56,26 @@ public class PostDTO {
         this.createdAt = createdAt;
         this.transactionStatus = transactionStatus;
         this.areaName = areaName;
+        this.xLoc = xLoc;
+        this.yLoc = yLoc;
+    }
+    public static PostDTO fromEntity(Post post) {
+        return PostDTO.builder()
+                .postId(post.getPostId())
+                .userId(post.getUserId())
+                .categoryType(post.getCategoryType())
+                .postTitle(post.getPostTitle())
+                .immediateCase(post.getImmediateCase())
+                .reward(post.getReward())
+                .description(post.getDescription())
+                .location(post.getLocation())
+                .createdAt(post.getCreatedAt())
+                .transactionStatus(post.getTransactionStatus())
+                .areaName(post.getAreaName())
+                .xLoc(post.getXLoc())
+                .yLoc(post.getYLoc())
+                .build();
     }
 }
+
 

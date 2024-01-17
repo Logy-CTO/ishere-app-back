@@ -1,5 +1,6 @@
 package com.example.demo.Post;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -7,18 +8,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/board")
 public class PostController {
 
     private final PostRepository postRepository;
+    private final PostService postService;
 
-    public PostController(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
 
     @GetMapping("/main/{page}")
     public List<Post> getMainPosts(@PathVariable int page) {
@@ -36,4 +36,11 @@ public class PostController {
     public long getPostCount() {
         return postRepository.count();
     }
+
+    @GetMapping("/mypage")
+    public List<PostDTO> getMyPage(HttpSession session) {
+        long userName = (long) session.getAttribute("userName");
+        List<PostDTO> posts = postService.getPostsByUserName(userName);
+        return posts;
+    }//List<PostDTO> 객체를 JSON 형태로 변환하여 응답
 }

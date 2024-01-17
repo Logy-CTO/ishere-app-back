@@ -46,8 +46,10 @@ public class Post {
 
     @Column(name = "AREA_NAME")
     private String areaName;
-
-
+    @Column(name = "X_LOC")
+    private double xLoc;
+    @Column(name = "Y_LOC")
+    private double yLoc;
 
     @Builder
     public Post(int postId,
@@ -60,7 +62,9 @@ public class Post {
                 double location,
                 LocalDateTime createdAt,
                 byte transactionStatus,
-                String areaName)
+                String areaName,
+                double xLoc,
+                double yLoc)
     {
         this.postId = postId;
         this.userId = userId;
@@ -73,6 +77,8 @@ public class Post {
         this.createdAt = createdAt;
         this.transactionStatus = transactionStatus;
         this.areaName = areaName;
+        this.xLoc = xLoc;
+        this.yLoc = yLoc;
     }
 
     public Post() {
