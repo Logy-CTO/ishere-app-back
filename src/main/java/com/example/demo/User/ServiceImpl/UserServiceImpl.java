@@ -38,12 +38,15 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new IllegalArgumentException("존재하지 않는 회원입니다.");
         }
+        //세션을 한달간 유지
+        session.setMaxInactiveInterval(60 * 60 * 24 * 30);
 
         // 사용자 정보를 세션에 저장
-        session.setAttribute("user", user);
+        session.setAttribute("userName", user.getUserName());
 
         // 마지막 활동 시간을 현재 시간으로 갱신
         session.setAttribute("lastActivityTime", LocalDateTime.now());
+
 
         return new LoginDto(user.getPhoneNumber());
     }

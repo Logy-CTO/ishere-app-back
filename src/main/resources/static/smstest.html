@@ -133,13 +133,13 @@
 <button id="submit">인증번호 받기</button>
 
 <!-- initially hidden -->
-<div id="verification">
+<div id="verification" display="None">
     <label for="inputNum">인증번호:</label><br>
     <input type="text" id="inputNum" placeholder="Enter the verification number" required><br>
     <button id="verify">인증 확인</button>
 </div>
 
-<button id="register">회원가입 완료</button>
+<button id="register" display="None">회원가입 완료</button>
 
 <!-- 로그인 섹션 -->
 <h1>로그인</h1>
@@ -147,10 +147,22 @@
 <input type="text" id="loginPhoneNumber" placeholder="Enter your phone number" required><br>
 <button id="loginSubmit">회원조회 및 인증번호 요청</button><br>
 
-<div id="loginVerification" style="display:none;">
+<div id="loginVerification" >
     <label for="loginInputNum">인증번호:</label><br>
     <input type="text" id="loginInputNum" placeholder="Enter the verification number" required><br>
     <button id="loginVerify">로그인</button>
 </div>
+<button id="logout">로그아웃</button>
+
+<script>
+    $(document).ready(function(){
+        $("#logout").click(function(){
+            $.post("/user/logout");
+        });
+    });
+</script>
+
+</body>
+</html>
 </body>
 </html>

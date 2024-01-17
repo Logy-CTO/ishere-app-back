@@ -1,9 +1,9 @@
-package com.example.demo.Interceptor;
+package Interceptor;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import com.example.demo.Interceptor.SessionInterceptor;
+import Interceptor.SessionInterceptor;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
     @Override

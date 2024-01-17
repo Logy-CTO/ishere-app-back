@@ -16,7 +16,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/register")//플러터로 변경시 @requestbody로 변경
     public SignUpDto registerUser(@ModelAttribute SignUpDto signUpDto) {
         User registeredUser = userService.registerUser(signUpDto);
         return new SignUpDto(
@@ -37,6 +37,12 @@ public class UserController {
             return new ResponseEntity<>(loginUserDto, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @PostMapping("/logout")
+    public void logoutUser(HttpSession session) {
+        if (session != null) {
+            session.invalidate();
         }
     }
 
