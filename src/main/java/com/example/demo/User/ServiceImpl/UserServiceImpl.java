@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
 
         // 사용자 정보를 세션에 저장
         session.setAttribute("userName", user.getUserName());
+        session.setAttribute("userId", user.getId());
 
         // 마지막 활동 시간을 현재 시간으로 갱신
         session.setAttribute("lastActivityTime", LocalDateTime.now());

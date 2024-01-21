@@ -37,10 +37,10 @@ public class PostController {
         return postRepository.count();
     }
 
-    @GetMapping("/mypage")
+    @GetMapping("/mypage")// 내가 쓴글 확인(마이페이지)
     public List<PostDTO> getMyPage(HttpSession session) {
-        long userName = (long) session.getAttribute("userName");
-        List<PostDTO> posts = postService.getPostsByUserName(userName);
+        long userId = (long) session.getAttribute("userId");
+        List<PostDTO> posts = postService.getPostsByUserId(userId);
         return posts;
     }//List<PostDTO> 객체를 JSON 형태로 변환하여 응답
 }

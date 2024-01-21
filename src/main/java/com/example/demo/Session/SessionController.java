@@ -13,6 +13,8 @@ public class SessionController {
         // 사용자 이름
         Object userName = session.getAttribute("userName");
         model.addAttribute("userName", userName);
+        Object userId = session.getAttribute("userId");
+        model.addAttribute("userId", userId);
 
         // 마지막 활동 시간
         LocalDateTime lastActivityTime = (LocalDateTime) session.getAttribute("lastActivityTime");
