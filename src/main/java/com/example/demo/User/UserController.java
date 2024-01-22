@@ -65,4 +65,16 @@ public class UserController {
         return userService.getUserPosts(session);
     }
 
+    @GetMapping("/editProfile")
+    public ResponseEntity<String> showEditProfileForm() {
+        // 필요한 초기 데이터 로드 등이 있다면 여기서 처리할 수 있습니다.
+        return ResponseEntity.ok("Edit Profile Form");
+    }
+
+    @PostMapping("/editProfile")
+    public ResponseEntity<String> editProfile(@ModelAttribute SignUpDto signUpDto, HttpSession session) {
+        userService.updateProfile(signUpDto, session);
+        return ResponseEntity.ok("Profile Updated");
+    }
+
 }

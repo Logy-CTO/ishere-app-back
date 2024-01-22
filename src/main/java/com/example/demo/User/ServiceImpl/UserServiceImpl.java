@@ -97,5 +97,25 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    public void updateProfile(SignUpDto signUpDto, HttpSession session) {
+        Long loggedInUserId = (Long) session.getAttribute("userId");
+
+        if (loggedInUserId == null) {
+            // 로그인되지 않은 사용자 처리
+            throw new RuntimeException("User not logged in.");
+        }
+
+        User existingUser = userRepository.findById(loggedInUserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 업데이트할 필드들만 변경
+        existingUser.setRealName(signUpDto.getRealName());
+        existingUser.setUserName(signUpDto.getUserName());
+        existingUser.setBankName(signUpDto.getBankName());
+        existingUser.setAccountNumber(signUpDto.getAccountNumber());
+
+        // 변경된 정보를 저장
+        userRepository.save(existingUser);
+    }
 
 }

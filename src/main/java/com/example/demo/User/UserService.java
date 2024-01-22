@@ -13,5 +13,6 @@ public interface UserService {
     User registerUser(SignUpDto signUpDto);
     LoginDto loginUser(LoginDto loginDto, HttpSession session);
     List<PostDTO> getUserPosts(HttpSession session);
+    void updateProfile(SignUpDto signUpDto, HttpSession session);
 }
 
