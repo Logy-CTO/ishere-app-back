@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 public class LoginDto {
 
     private String phoneNumber;
-    @Builder
+
     public LoginDto(String phoneNumber){
         this.phoneNumber = phoneNumber;
+
     }
 
 }

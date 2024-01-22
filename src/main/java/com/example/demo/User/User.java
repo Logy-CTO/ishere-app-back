@@ -62,6 +62,7 @@ public class User {
         this.userName = userName;
         this.areaName = areaName;
     }
+    @Builder
     public User(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }//login

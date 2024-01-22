@@ -59,23 +59,5 @@ public class PostDTO {
         this.xLoc = xLoc;
         this.yLoc = yLoc;
     }
-    public static PostDTO fromEntity(Post post) {
-        return PostDTO.builder()
-                .postId(post.getPostId())
-                .userId(post.getUserId())
-                .categoryType(post.getCategoryType())
-                .postTitle(post.getPostTitle())
-                .immediateCase(post.getImmediateCase())
-                .reward(post.getReward())
-                .description(post.getDescription())
-                .location(post.getLocation())
-                .createdAt(post.getCreatedAt())
-                .transactionStatus(post.getTransactionStatus())
-                .areaName(post.getAreaName())
-                .xLoc(post.getXLoc())
-                .yLoc(post.getYLoc())
-                .build();
-    }
+
 }
-
-
