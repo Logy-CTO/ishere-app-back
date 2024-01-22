@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Posts</title>
+</head>
+<body>
+<h1>User Posts</h1>
+
+<table>
+    <tr>
+        <th>Post Title</th>`
+        <th>Reward</th>
+        <th>Immediate Case</th>
+        <th>Created At</th>
+    </tr>
+
+    <th:block th:each="post : ${posts}">
+        <tr>
+            <td th:text="${post.postTitle}"></td>
+            <td th:text="${post.reward}"></td>
+            <td th:text="${post.immediateCase}"></td>
+            <td th:text="${post.createdAt}"></td>
+        </tr>
+    </th:block>
+</table>
+</body>
+</html>

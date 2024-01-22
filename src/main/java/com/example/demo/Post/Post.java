@@ -47,9 +47,9 @@ public class Post {
     @Column(name = "AREA_NAME")
     private String areaName;
     @Column(name = "X_LOC")
-    private double xLoc;
+    private Double xLoc;
     @Column(name = "Y_LOC")
-    private double yLoc;
+    private Double yLoc;
 
     @Builder
     public Post(int postId,

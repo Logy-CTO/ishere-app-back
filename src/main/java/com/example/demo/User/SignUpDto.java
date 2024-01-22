@@ -13,6 +13,6 @@ public class SignUpDto{
     private String accountNumber;
     private String areaName;
     private String bankName;
-    private Long interestPost;
+    private String interestPost;
     private String realName;
 }

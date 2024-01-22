@@ -37,7 +37,7 @@ public class User {
     //후에 postEntity 생성 후 조인 수정 필요
 
     @Column(name = "INTEREST_POST") // 데이터베이스 생성시 디폴트 값
-    private Long interestPost;
+    private String interestPost;
 
     @Column(name = "REAL_NAME")
     private String realName;
@@ -48,7 +48,7 @@ public class User {
                 String accountNumber,
                 String areaName,
                 String bankName,
-                Long interestPost,
+                String interestPost,
                 String phoneNumber,
                 String realName,
                 String userName)

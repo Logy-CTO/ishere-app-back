@@ -41,6 +41,10 @@ public class UserServiceImpl implements UserService {
         //세션을 한달간 유지
         session.setMaxInactiveInterval(60 * 60 * 24 * 30);
 
+        // 로그인 성공 시 세션에 사용자 ID 저장
+        session.setAttribute("userId", user.getId());
+
+
         // 사용자 정보를 세션에 저장
         session.setAttribute("userName", user.getUserName());
 

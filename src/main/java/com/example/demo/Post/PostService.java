@@ -18,8 +18,8 @@ public class PostService {
     public List<Post> getPosts() {
         return postRepository.findAll();
     }
-    public List<PostDTO> getPostsByUserName(long userName) {
-        List<Post> posts = postRepository.findByUserName(userName);
+    public List<PostDTO> getPostsByUserName(long userId) {
+        List<Post> posts = postRepository.findByUserId(userId);
         List<PostDTO> postDTOs = new ArrayList<>();
 
         for (Post post : posts) {
@@ -29,6 +29,4 @@ public class PostService {
 
         return postDTOs;
     }
-}//PostDTO::fromEntity -> Post를 PostDTO로 변환
-    // collect(Collectors.toList())->collector로 Stream의 결과를 새로운 List로 변환
-
+}//PostDTO::fro
