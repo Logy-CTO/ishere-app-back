@@ -2,17 +2,17 @@ package com.example.demo.global.service;
 
 import com.example.demo.global.dto.JoinDTO;
 import com.example.demo.global.entity.UserEntity;
-import com.example.demo.global.Repository.UserRepository;
+import com.example.demo.global.Repository.JWTUserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JoinService {
 
-    private final UserRepository userRepository;
+    private final JWTUserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public JoinService(JWTUserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
 
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
