@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 @Entity
 @Getter
 @Setter
-@Table(name = "USER")
+@Table(name = "user")
 @NoArgsConstructor
 public class User {
     @Id

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-@Table(name = "user_entity")
+@Table(name = "user")
 public class UserEntity {
 
     @Id
@@ -15,6 +15,7 @@ public class UserEntity {
     // id가 생성되는 방식, id가 겹치지 않고 생성 됨.
     private int id;
 
+    @Column(name = "phone_number")
     private String username;
     private String password;
 

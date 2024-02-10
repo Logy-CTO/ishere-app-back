@@ -1,6 +1,5 @@
 package com.example.demo.global.service;
 
-import com.example.demo.global.Repository.JWTUserRepository;
 import com.example.demo.global.dto.CustomUserDetails;
 import com.example.demo.global.entity.UserEntity;
 import com.example.demo.global.Repository.JWTUserRepository;
