@@ -6,6 +6,12 @@ import com.example.demo.global.Repository.JWTUserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
+/***
+ * JoinService 사용 안합니다. UserServiceImpl 참조 하세요!
+ */
+
+
 @Service
 public class JoinService {
 

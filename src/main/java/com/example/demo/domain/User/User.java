@@ -41,6 +41,12 @@ public class User {
     @Column(name = "REAL_NAME")
     private String realName;
 
+    @Column(name = "PASSWORD")
+    private String password;
+
+    @Column(name = "ROLE")
+    private String role;
+
     @Builder
     public User(Long id,
                 String accountNumber,
@@ -49,7 +55,9 @@ public class User {
                 String interestPost,
                 String phoneNumber,
                 String realName,
-                String userName)
+                String userName,
+                String password,
+                String role)
     {
         this.id = id;
         this.accountNumber = accountNumber;
@@ -59,5 +67,7 @@ public class User {
         this.realName = realName;
         this.userName = userName;
         this.areaName = areaName;
+        this.password = password;
+        this.role = role;
     }
 }

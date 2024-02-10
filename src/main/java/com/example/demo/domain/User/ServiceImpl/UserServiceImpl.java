@@ -4,6 +4,7 @@ import com.example.demo.domain.Post.PostDTO;
 import com.example.demo.domain.Post.PostMapper;
 import com.example.demo.domain.Post.PostRepository;
 import com.example.demo.domain.User.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpSession;
@@ -14,12 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.ui.Model;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final UserMapper usermapper;
@@ -37,9 +38,20 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("이미 등록된 전화번호입니다.");
         }
 
-        //signupdto -> entity 형변환 후 jpa -> 데이터베이스 저장
-        return userRepository.save(usermapper.signUpDtoToUser(signUpDto));
+        String username = signUpDto.getUserName(); // userName 변수를 받아옵니다.
+        String password = "울트라킹왕짱코딩의신택수"; // 고정된 패스워드를 설정합니다.
+
+        User user = usermapper.signUpDtoToUser(signUpDto); // signUpDto를 User로 형변환합니다.
+
+        user.setUserName(username); // User Entity에 userName을 설정합니다.
+        user.setPassword(bCryptPasswordEncoder.encode(password)); // User Entity에 암호화된 패스워드를 설정합니다.
+        user.setRole("ROLE_ADMIN"); // 권한 일시 부여 
+
+
+        // Entity를 데이터베이스에 저장하고, 결과를 반환합니다.
+        return userRepository.save(user);
     }
+
     @Transactional
     @Override
     public LoginDto loginUser(LoginDto loginDto, HttpSession session) {
