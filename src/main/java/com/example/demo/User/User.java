@@ -10,7 +10,7 @@ import javax.persistence.*;
 import javax.persistence.OneToMany;
 @Entity
 @Getter
-@Table(name = "USER")
+@Table(name = "user")
 @NoArgsConstructor
 public class User {
     @Id
@@ -19,7 +19,7 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "USER_NAME")
+    @Column(name = "user_name")
     private String userName;
 
     @Column(name = "phone_number")
