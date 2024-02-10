@@ -34,6 +34,8 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")//properties 수정 시 자동 재시작
     implementation 'commons-net:commons-net:3.8.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    //2024-02-07 swagger 의존성 추가
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     //2024-01-02 validation 의존성 추가
     implementation 'net.nurigo:sdk:4.3.0'
     //2024-01-09 coolsms 문자인증 api추가

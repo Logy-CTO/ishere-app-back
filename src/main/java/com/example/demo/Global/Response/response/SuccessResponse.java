@@ -1,0 +1,30 @@
+package com.example.demo.Global.Response.response;
+
+import com.example.demo.Global.Response.Code.SuccessCode;
+//import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+
+@Getter
+public class SuccessResponse {
+
+    //@Schema(description = "Business code")
+    private final String code;
+    //@Schema(description = "response message")
+    private final String message;
+    //@Schema(description = "response data")
+    private final Object data;
+
+    public static SuccessResponse of(SuccessCode successCode, Object data) {
+        return new SuccessResponse(successCode, data);
+    }
+
+    public static SuccessResponse of(SuccessCode successCode) {
+        return new SuccessResponse(successCode, "");
+    }
+
+    public SuccessResponse(SuccessCode successCode, Object data) {
+        this.code = successCode.getCode();
+        this.message = successCode.getMessage();
+        this.data = data;
+    }
+}
