@@ -11,12 +11,11 @@ import lombok.Setter;
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // id가 생성되는 방식, id가 겹치지 않고 생성 됨.
-    private int id;
+    private int uid;
 
     @Column(name = "phone_number")
     private String username;
+
     private String password;
 
     private String role; // 유저에 대한 권한을 줌.

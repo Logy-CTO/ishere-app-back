@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import javax.servlet.http.HttpSession;
+//import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -37,10 +37,10 @@ public class PostController {
         return postRepository.count();
     }
 
-    @GetMapping("/mypage")// 내가 쓴글 확인(마이페이지)
-    public List<PostDTO> getMyPage(HttpSession session) {
-        long userId = (long) session.getAttribute("userId");
-        List<PostDTO> posts = postService.getPostsByUserId(userId);
-        return posts;
-    }//List<PostDTO> 객체를 JSON 형태로 변환하여 응답
+    //@GetMapping("/mypage")// 내가 쓴글 확인(마이페이지)
+    //public List<PostDTO> getMyPage(HttpSession session) {
+     //   long userId = (long) session.getAttribute("userId");
+     //    List<PostDTO> posts = postService.getPostsByUserId(userId);
+     //   return posts;
+    //}//List<PostDTO> 객체를 JSON 형태로 변환하여 응답
 }

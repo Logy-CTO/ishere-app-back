@@ -1,9 +1,9 @@
 package com.example.demo.domain.Post;
-import com.example.demo.domain.User.User;
+
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.persistence.ManyToOne;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
