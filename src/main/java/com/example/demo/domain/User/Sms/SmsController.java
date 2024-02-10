@@ -1,4 +1,4 @@
-package com.example.demo.User.Sms;
+package com.example.demo.domain.User.Sms;
 import com.google.api.client.util.Value;
 import lombok.RequiredArgsConstructor;
 import net.nurigo.sdk.NurigoApp;
