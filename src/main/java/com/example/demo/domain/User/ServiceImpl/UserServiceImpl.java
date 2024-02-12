@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User registerUser(SignUpDto signUpDto) {
+    public User registerUser(@RequestBody SignUpDto signUpDto) {
         // userName, phoneNumber 중복 체크
         if(userRepository.existsByUserName(signUpDto.getUserName())) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
@@ -38,14 +39,11 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("이미 등록된 전화번호입니다.");
         }
 
-        String username = signUpDto.getUserName(); // userName 변수를 받아옵니다.
-        String password = "울트라킹왕짱코딩의신택수"; // 고정된 패스워드를 설정합니다.
-
+        // ** usermapper에서 username,phonenumber를 넣어줘서 따로 선언 x
         User user = usermapper.signUpDtoToUser(signUpDto); // signUpDto를 User로 형변환합니다.
 
-        user.setUserName(username); // User Entity에 userName을 설정합니다.
-        user.setPassword(bCryptPasswordEncoder.encode(password)); // User Entity에 암호화된 패스워드를 설정합니다.
-        user.setRole("ROLE_ADMIN"); // 권한 일시 부여 
+        user.setPassword(bCryptPasswordEncoder.encode("울트라킹왕짱코딩의신택수")); // User Entity에 암호화된 패스워드를 설정합니다.
+        user.setRole("ROLE_ADMIN"); // 권한 일시 부여
 
 
         // Entity를 데이터베이스에 저장하고, 결과를 반환합니다.
@@ -65,18 +63,13 @@ public class UserServiceImpl implements UserService {
         }
         //세션을 한달간 유지
         session.setMaxInactiveInterval(60 * 60 * 24 * 30);
-
         // 로그인 성공 시 세션에 사용자 ID 저장
         session.setAttribute("userId", user.getId());
-
-
         // 사용자 정보를 세션에 저장
         session.setAttribute("userName", user.getUserName());
         session.setAttribute("userId", user.getId());
-
         // 마지막 활동 시간을 현재 시간으로 갱신
         session.setAttribute("lastActivityTime", LocalDateTime.now());
-
 
         return new LoginDto(user.getPhoneNumber());
     }

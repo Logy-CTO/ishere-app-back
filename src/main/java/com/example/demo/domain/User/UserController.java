@@ -4,6 +4,7 @@ import com.example.demo.domain.Post.Post;
 import com.example.demo.domain.Post.PostDTO;
 import com.example.demo.domain.Post.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -30,8 +31,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")//플러터로 변경시 @requestbody로 변경
-    public SignUpDto registerUser(@ModelAttribute SignUpDto signUpDto) {
+    //컨트롤러에서 @ModelAttribute를 사용하면 HTML form에서 전송된 데이터를 받을 수 있습니다.
+    // 하지만 JSON 형식의 데이터를 받기 위해서는 @RequestBody 어노테이션을 사용해야 합니다.  //플러터로 변경시 @requestbody로 변경
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public SignUpDto registerUser(@RequestBody SignUpDto signUpDto) {
         User registeredUser = userService.registerUser(signUpDto);
         return new SignUpDto(
                 registeredUser.getUserName(),
@@ -44,6 +47,7 @@ public class UserController {
                 registeredUser.getRealName()
         );
     }
+
     @PostMapping("/login")
     public ResponseEntity<LoginDto> loginUser(@ModelAttribute LoginDto loginDto, HttpSession session) {
         try {

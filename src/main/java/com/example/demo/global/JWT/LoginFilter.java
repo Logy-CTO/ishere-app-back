@@ -1,7 +1,5 @@
 package com.example.demo.global.JWT;
 
-
-import com.example.demo.global.JWT.JWTUtil;
 import com.example.demo.global.dto.CustomUserDetails;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +14,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.util.Collection;
 import java.util.Iterator;
 
+
+// 클라이언트 요청 -> 톰캣 진입 -> 일련의 필터들 -> 스프링 서블릿(컨트롤러) 와 같은 방식으로 요청이 이루어집니다.
+//
+// 이때 스프링 시큐리티는 일련의 필터들에서 사용자의 요청을 검증하는데 그 중 저희가 만든 LoginFilter는 UsernamePasswordAuthenticationFilter의
+// 정의에 따라서 /login 경로로 오는 POST 요청을 검증하게 됩니다.
+// 따라서 필터단에서 해당 요청을 캐치하여 검증을 진행하고 응답하기 때문에 컨트롤러에서 처리할 필요가 없습니다.
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
@@ -40,6 +44,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         return authenticationManager.authenticate(authToken);
     }
 
+
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
 
@@ -53,8 +58,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-
-        String token = jwtUtil.createJwt(username, role, 60 * 60 * 10L);
+        //10시간 유지
+        //String token = jwtUtil.createJwt(username, role, 60 * 60 * 10L);
+        //한달 유지
+        String token = jwtUtil.createJwt(username, role, 30 * 24 * 60 * 60L);
 
         response.addHeader("Authorization", "Bearer " + token);
     }

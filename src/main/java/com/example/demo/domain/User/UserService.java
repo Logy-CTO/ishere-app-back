@@ -6,13 +6,14 @@ import com.example.demo.global.dto.JoinDTO;
 import com.example.demo.global.entity.UserEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public interface UserService {
     @Transactional
-    User registerUser(SignUpDto signUpDto);
+    User registerUser(@RequestBody SignUpDto signUpDto);
     LoginDto loginUser(LoginDto loginDto, HttpSession session);
     List<PostDTO> getUserPosts(HttpSession session);
     void updateProfile(SignUpDto signUpDto, HttpSession session);

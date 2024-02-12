@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .authorizeRequests(authorize -> authorize
                         .antMatchers("/login", "/", "/join",
-                                "/smstest.html","/user/login","/sendSMS","/verifySMS","/user/register").permitAll()
+                                "/smstest.html","/user/login","/sendSMS","/verifySMS","/user/register","/session","/loginuser").permitAll()
                         .antMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

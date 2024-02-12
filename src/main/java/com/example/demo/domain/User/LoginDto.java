@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 public class LoginDto {
 
     private String phoneNumber;
+    private String password;
 
     public LoginDto(String phoneNumber){
         this.phoneNumber = phoneNumber;
-
+        this.password = password;
     }
 
 }
