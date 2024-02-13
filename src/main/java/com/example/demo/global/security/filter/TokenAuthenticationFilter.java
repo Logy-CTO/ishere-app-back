@@ -1,11 +1,13 @@
-package com.example.demo.global.JWT;
+package com.example.demo.global.security.filter;
 
-import com.example.demo.global.dto.CustomUserDetails;
+import com.example.demo.global.security.token.AuthToken;
+import com.example.demo.global.security.principal.CustomUserDetails;
 import com.example.demo.global.entity.UserEntity;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,11 +15,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-public class JWTFilter extends OncePerRequestFilter {
+// OncePerRequestFilter를 상속한 TokenAuthenticationFilter 클래스입니다.
+// OncePerRequestFilter는 한 번의 요청에 대해 단 한 번만 실행되는 필터를 만들기 위한 스프링 프레임워크의 추상 클래스입니다.
+public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JWTUtil jwtUtil;
+    private final AuthToken jwtUtil;
 
-    public JWTFilter(JWTUtil jwtUtil) {
+    public TokenAuthenticationFilter(AuthToken jwtUtil) {
 
         this.jwtUtil = jwtUtil;
     }

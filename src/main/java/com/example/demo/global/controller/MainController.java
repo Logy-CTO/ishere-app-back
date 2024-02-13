@@ -14,18 +14,23 @@ import java.util.Iterator;
 @ResponseBody
 public class MainController {
 
+    // 메인 페이지 요청 처리 메서드
     @GetMapping("/")
-    public String mainP() {
+    public String mainPage() {
 
+        // 현재 사용자의 이름 가져오기
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
 
+        // 현재 사용자의 인증 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // 현재 사용자의 권한 가져오기
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iter = authorities.iterator();
-        GrantedAuthority auth = iter.next();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        return "Main Controller : "+ name;
+        // 반환 값
+        return "Main Controller : " + name;
     }
 }

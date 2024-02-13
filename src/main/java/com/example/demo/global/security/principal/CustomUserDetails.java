@@ -1,4 +1,4 @@
-package com.example.demo.global.dto;
+package com.example.demo.global.security.principal;
 
 import com.example.demo.global.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
