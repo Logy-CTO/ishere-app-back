@@ -2,10 +2,7 @@ package com.example.demo.domain.User;
 
 
 import com.example.demo.domain.Post.PostDTO;
-import com.example.demo.global.dto.JoinDTO;
-import com.example.demo.global.entity.UserEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpSession;

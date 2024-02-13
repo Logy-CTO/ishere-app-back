@@ -45,7 +45,6 @@ public class UserServiceImpl implements UserService {
         user.setPassword(bCryptPasswordEncoder.encode("울트라킹왕짱코딩의신택수")); // User Entity에 암호화된 패스워드를 설정합니다.
         user.setRole("ROLE_ADMIN"); // 권한 일시 부여
 
-
         // Entity를 데이터베이스에 저장하고, 결과를 반환합니다.
         return userRepository.save(user);
     }

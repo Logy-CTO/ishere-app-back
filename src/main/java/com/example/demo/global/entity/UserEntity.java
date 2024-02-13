@@ -11,7 +11,8 @@ import lombok.Setter;
 public class UserEntity {
 
     @Id
-    private int uid;
+    @Column(name = "user_id")
+    private Long id;
 
     @Column(name = "phone_number")
     private String username;
