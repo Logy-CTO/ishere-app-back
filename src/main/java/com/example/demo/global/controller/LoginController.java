@@ -1,41 +1,37 @@
 package com.example.demo.global.controller;
 
-import com.example.demo.global.dto.LoginDTO;
-import com.example.demo.global.security.service.JWTUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.global.entity.Token;
+import com.example.demo.global.entity.UserEntity;
+import com.example.demo.global.security.Repository.JWTUserRepository;
+import com.example.demo.global.security.service.JwtService;
+import com.example.demo.global.security.token.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
-
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 public class LoginController {
-
-    // JWTUserService 주입
-    private final JWTUserService userService;
-
-    @Autowired
-    public LoginController(JWTUserService userService) {
-        this.userService = userService;
-    }
-
     // 로그인 요청 처리 메서드
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JWTUserRepository jwtUserRepository;
+    private final JwtService jwtService;
+
     @PostMapping(value = "/loginuser", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> loginUser(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
-        String username = loginDTO.getUsername();
-        String password = "울트라킹왕짱코딩의신택수";
+    public Token login(@RequestBody Map<String, String> user) {
+        log.info("PhoneNumber = {}", user.get("username"));
+        UserEntity member = jwtUserRepository.findByUsername(user.get("username"));
 
-        // 사용자 인증 및 토큰 생성
-        String token = userService.authenticateAndGenerateToken(username, password);
-
-        // 응답에 토큰 추가
-        response.addHeader("Authorization", "Bearer " + token);
-
-        // 클라이언트에게 응답 전송
-        return ResponseEntity.ok(token);
+        Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRole());
+        log.info("getroleeeee = {}", member.getRole());
+        jwtService.login(tokenDto);
+        return tokenDto;
     }
+
 }

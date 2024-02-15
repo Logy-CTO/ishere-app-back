@@ -1,7 +1,7 @@
 package com.example.demo.global.config;
 
-import com.example.demo.global.security.filter.TokenAuthenticationFilter;
-import com.example.demo.global.security.token.AuthToken;
+import com.example.demo.global.security.filter.JwtAuthenticationFilter;
+import com.example.demo.global.security.token.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,11 +19,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // AuthToken 클래스를 주입받음
-    private final AuthToken jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public SecurityConfig(AuthToken jwtUtil) {
-        this.jwtUtil = jwtUtil;
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     // AuthenticationManager 빈을 설정
@@ -48,11 +48,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable() // HTTP 기본 인증 비활성화
                 .authorizeRequests(authorize -> authorize
                         .antMatchers("/login", "/", "/join",
-                                "/smstest.html","/user/login","/sendSMS","/verifySMS","/user/register","/session","/loginuser").permitAll() // 특정 URL 패턴은 모두 허용
+                                "/smstest.html","/user/login","/sendSMS","/verifySMS","/user/register","/session","/loginuser"
+                        ,"/refresh").permitAll() // 특정 URL 패턴은 모두 허용
                         .antMatchers("/admin").hasRole("ADMIN") // /admin URL은 ADMIN 역할을 가진 사용자에게만 허용
                         .anyRequest().authenticated() // 나머지 모든 요청은 인증된 사용자에게만 허용
                 )
-                .addFilterBefore(new TokenAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class) // TokenAuthenticationFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class) // TokenAuthenticationFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션 관리 정책을 설정하여 세션을 사용하지 않음
     }
 }
