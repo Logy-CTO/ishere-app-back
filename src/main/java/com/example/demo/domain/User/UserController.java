@@ -48,26 +48,14 @@ public class UserController {
         );
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginDto> loginUser(@ModelAttribute LoginDto loginDto, HttpSession session) {
-        try {
-            LoginDto loginUserDto = userService.loginUser(loginDto, session);
-            return new ResponseEntity<>(loginUserDto, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-    @PostMapping("/logout")
-    public void logoutUser(HttpSession session) {
-        if (session != null) {
-            session.invalidate();
-        }
-    }
 
-    @GetMapping("/interest")
-    public List<PostDTO> getUserPosts(HttpSession session) {
-        return userService.getUserPosts(session);
-    }
+    /*** 세션방식 사용안함
+     * @GetMapping("/interest")
+     *     public List<PostDTO> getUserPosts() {
+     *         return userService.getUserPosts();
+     *     }
+
+
 
     @GetMapping("/editProfile")
     public ResponseEntity<String> showEditProfileForm() {
@@ -80,5 +68,5 @@ public class UserController {
         userService.updateProfile(signUpDto, session);
         return ResponseEntity.ok("Profile Updated");
     }
-
+*/
 }

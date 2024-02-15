@@ -1,8 +1,6 @@
 package com.example.demo.domain.Post;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,5 +26,22 @@ public class PostService {
         }
 
         return postDTOs;
+    }
+    public Post writePost(PostDTO postDto) {
+        Post post = Post.builder()
+                .postId(postDto.getPostId())
+                .userId(postDto.getUserId())
+                .categoryType(postDto.getCategoryType())
+                .postTitle(postDto.getPostTitle())
+                .immediateCase(postDto.getImmediateCase())
+                .reward(postDto.getReward())
+                .description(postDto.getDescription())
+                .createdAt(postDto.getCreatedAt())
+                .transactionStatus((byte) 0) // TransactionStatus를 항상 0으로 초기화
+                .areaName(postDto.getAreaName())
+                .xLoc(postDto.getXLoc())
+                .yLoc(postDto.getYLoc())
+                .build();
+        return postRepository.save(post);
     }
 }//PostDTO::fro

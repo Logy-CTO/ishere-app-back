@@ -2,16 +2,14 @@ package com.example.demo.domain.Post;
 
 import java.time.LocalDateTime;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Data
 public class PostDTO {
 
     private int postId;

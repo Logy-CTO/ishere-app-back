@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         // Entity를 데이터베이스에 저장하고, 결과를 반환합니다.
         return userRepository.save(user);
     }
-
+//밑에는 세션이라 사용 x
     @Transactional
     @Override
     public LoginDto loginUser(LoginDto loginDto, HttpSession session) {
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
         return new LoginDto(user.getPhoneNumber());
     }
-
+//여기까지 사용 x
     @Override
     public List<PostDTO> getUserPosts(HttpSession session) {
         Long loggedInUserId = (Long) session.getAttribute("userId");
