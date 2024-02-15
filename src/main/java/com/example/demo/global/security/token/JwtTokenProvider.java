@@ -3,18 +3,16 @@ package com.example.demo.global.security.token;
 import com.example.demo.global.entity.RefreshToken;
 import com.example.demo.global.entity.Token;
 import com.example.demo.global.security.service.CustomUserDetailsService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
+import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +28,14 @@ import java.util.Date;
  * validate() 메서드를 사용하여 토큰의 유효성을 검사할 수 있습니다.
  */
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
@@ -51,9 +56,11 @@ public class JwtTokenProvider {
     }
 
     private long accessTokenValidTime = 10 * 60 * 1000L; // 10분(밀리초)
-
     private long refreshTokenValidTime = 30 * 60 * 1000L; // 30분(밀리초)
 
+    //private long accessTokenValidTime = 30 * 60 * 1000L; // 30분(밀리초)
+    //private long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L; // 14일(밀리초)
+    Date now = new Date();
 
     // 주어진 사용자 이름, 역할 및 만료 시간을 이용하여 JWT 토큰을 생성하는 메서드
     public Token createAccessToken(String username, String role) {
@@ -63,8 +70,8 @@ public class JwtTokenProvider {
         String accessToken = Jwts.builder()
                 .claim("username", username) // 사용자 이름(Claim) 추가
                 .claim("role", role) // 사용자 역할(Claim) 추가
-                .setIssuedAt(new Date(System.currentTimeMillis())) // 토큰 발급 시간 설정
-                .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidTime)) // 토큰 만료 시간 설정
+                .setIssuedAt(now) // 토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + accessTokenValidTime)) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, accessSecretKey)  // 시크릿 키로 서명
                 .compact(); // 토큰을 문자열로 변환하여 반환
 
@@ -72,8 +79,8 @@ public class JwtTokenProvider {
         String refreshToken =  Jwts.builder()
                 .claim("username", username) // 사용자 이름(Claim) 추가
                 .claim("role", role) // 사용자 역할(Claim) 추가
-                .setIssuedAt(new Date(System.currentTimeMillis())) // 토큰 발급 시간 설정
-                .setExpiration(new Date(System.currentTimeMillis() +  refreshTokenValidTime)) // 토큰 만료 시간 설정
+                .setIssuedAt(now) // 토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + refreshTokenValidTime)) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, refreshSecretKey)// 시크릿 키로 서명
                 .compact(); // 토큰을 문자열로 변환하여 반환
 
@@ -84,17 +91,13 @@ public class JwtTokenProvider {
 
         // refresh 객체에서 refreshToken 추출
         String refreshToken = refreshTokenObj.getRefreshToken();
-
         try {
-            // 검증
             Jws<Claims> claims = Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(refreshToken);
-
             //refresh 토큰의 만료시간이 지나지 않았을 경우, 새로운 access 토큰을 생성합니다.
             if (!claims.getBody().getExpiration().before(new Date())) {
-                return recreationAccessToken(claims.getBody().get("sub").toString(), claims.getBody().get("roles"));
+                return recreationAccessToken(claims.getBody().get("username").toString(), claims.getBody().get("roles"));
             }
         }catch (Exception e) {
-
             //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.
             return null;
 
@@ -104,8 +107,7 @@ public class JwtTokenProvider {
     }
 
     public String recreationAccessToken(String username, Object roles){
-
-        Claims claims = (Claims) Jwts.claims().setSubject(username); // JWT payload 에 저장되는 정보단위
+        Claims claims = Jwts.claims().setSubject(username);  // JWT payload 에 저장되는 정보단위
         claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
 
@@ -117,7 +119,7 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS256, accessSecretKey)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
                 .compact();
-
+        System.out.println(accessToken);
         return accessToken;
     }
 
@@ -141,9 +143,17 @@ public class JwtTokenProvider {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (Exception e) {
-            return false;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+
+            log.info("Invalid JWT Token", e);
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT Token", e);
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT Token", e);
+        } catch (IllegalArgumentException e) {
+            log.info("JWT claims string is empty.", e);
         }
+        return false;
     }
 
 }
