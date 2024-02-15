@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-//import javax.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.core.Authentication;
 import java.util.List;
 
 @RestController
@@ -36,6 +37,25 @@ public class PostController {
     public long getPostCount() {
         return postRepository.count();
     }
+
+    @PostMapping("/upload")
+    public ResponseEntity writePost(@RequestBody PostDTO postDTO) {
+        // SecurityContext에서 Authentication 객체를 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
+        }
+
+        // 인증된 사용자의 ID를 PostDTO에 설정
+        postDTO.setUserId((Long) authentication.getPrincipal());
+        //여기 수정해야함 TokenProvider보면 username(String)으로 받고있어서
+
+        // 게시글 작성
+        return ResponseEntity.ok(postService.writePost(postDTO));
+    }
+
 
     //@GetMapping("/mypage")// 내가 쓴글 확인(마이페이지)
     //public List<PostDTO> getMyPage(HttpSession session) {
