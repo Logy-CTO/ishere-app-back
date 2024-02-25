@@ -25,7 +25,7 @@ public class PostDTO {
     private String areaName;
     private double xLoc;
     private double yLoc;
-
+    private String userName;
     @Builder
     public PostDTO(
             int postId,
@@ -40,7 +40,8 @@ public class PostDTO {
             byte transactionStatus,
             String areaName,
             double xLoc,
-            double yLoc
+            double yLoc,
+            String userName
     )
     {
         this.postId = postId;
@@ -56,6 +57,7 @@ public class PostDTO {
         this.areaName = areaName;
         this.xLoc = xLoc;
         this.yLoc = yLoc;
+        this.userName = userName;
     }
 
 }

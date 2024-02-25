@@ -68,7 +68,7 @@ public class JwtTokenProvider {
 
         //Access Token
         String accessToken = Jwts.builder()
-                .claim("username", username) // 사용자 이름(Claim) 추가
+                .setSubject(username) // 사용자 이름을 Subject로 설정
                 .claim("role", role) // 사용자 역할(Claim) 추가
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + accessTokenValidTime)) // set Expire Time
@@ -77,7 +77,7 @@ public class JwtTokenProvider {
 
         //Refresh Token
         String refreshToken =  Jwts.builder()
-                .claim("username", username) // 사용자 이름(Claim) 추가
+                .setSubject(username) // 사용자 이름을 Subject로 설정
                 .claim("role", role) // 사용자 역할(Claim) 추가
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + refreshTokenValidTime)) // set Expire Time
@@ -125,12 +125,44 @@ public class JwtTokenProvider {
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(this.getUserPk(token));
+        String username = this.getUserPk(token);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+        // Add logging to check the extracted username
+        System.out.println("Username extracted from token: " + username);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
-    // 토큰에서 회원 정보 추출
+
     public String getUserPk(String token) {
-        return Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(token).getBody().getSubject();
+        try {
+            // 토큰 파싱 전에 토큰을 출력
+            System.out.println("Received token: " + token);
+
+            Jws<Claims> claims = Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(token);
+            Claims body = claims.getBody();
+
+            // 클레임에서 사용자 이름을 추출
+            String username = body.getSubject();
+
+            if (username != null) {
+                // 토큰의 전체 클레임을 출력
+                System.out.println("Token claims: " + body);
+
+                // 추출된 사용자 이름을 반환
+                return username;
+            } else if (body.containsKey("username")) {
+                // 클레임에 "username"이라는 키가 존재하면 해당 값을 사용
+                String alternativeUsername = body.get("username", String.class);
+                System.out.println("Using alternative username from claim: " + alternativeUsername);
+                return alternativeUsername;
+            } else {
+                System.out.println("Username is null in the token.");
+                return null;
+            }
+        } catch (Exception e) {
+            // 토큰 파싱 중에 발생한 예외를 로그로 출력
+            System.out.println("Token parsing error: " + e.getMessage());
+            return null;
+        }
     }
 
     // Request의 Header에서 token 값을 가져옵니다. "Authorization" : "TOKEN값'

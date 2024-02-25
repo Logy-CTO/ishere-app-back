@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "Post")
+@Table(name = "post")
 
 public class Post {
     @Id
@@ -50,6 +50,8 @@ public class Post {
     private Double xLoc;
     @Column(name = "Y_LOC")
     private Double yLoc;
+    @Column(name = "USER_NAME")
+    private String userName;
 
     @Builder
     public Post(int postId,
@@ -64,7 +66,8 @@ public class Post {
                 byte transactionStatus,
                 String areaName,
                 double xLoc,
-                double yLoc)
+                double yLoc,
+                String userName)
     {
         this.postId = postId;
         this.userId = userId;
@@ -79,6 +82,7 @@ public class Post {
         this.areaName = areaName;
         this.xLoc = xLoc;
         this.yLoc = yLoc;
+        this.userName = userName;
     }
 
     public Post() {
