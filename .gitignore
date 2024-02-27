@@ -38,6 +38,6 @@ out/
 .vscode/
 
 #보안
-ishereFirebaseAdminsdk.json
-application-API.properties
-application-db.properties
+#ishereFirebaseAdminsdk.json
+#application-API.properties
+#application-db.properties

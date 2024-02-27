@@ -24,4 +24,5 @@ public class TokenBlacklist {
 
     @Column(name = "expiration_time", nullable = false)
     private LocalDateTime expirationTime;
+
 }
