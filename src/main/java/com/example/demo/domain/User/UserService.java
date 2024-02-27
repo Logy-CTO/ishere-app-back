@@ -11,8 +11,11 @@ import java.util.List;
 public interface UserService {
     @Transactional
     User registerUser(@RequestBody SignUpDto signUpDto);
+
     LoginDto loginUser(LoginDto loginDto, HttpSession session);
     List<PostDTO> getUserPosts(HttpSession session);
     void updateProfile(SignUpDto signUpDto, HttpSession session);
+    String findUserNameByPhoneNumber(String phoneNumber);
+    String findAreaNameByPhoneNumber(String phoneNumber);
 }
 

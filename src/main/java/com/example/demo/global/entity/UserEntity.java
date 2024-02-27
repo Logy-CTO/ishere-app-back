@@ -15,10 +15,10 @@ import java.util.Collection;
 public class UserEntity implements UserDetails {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name = "phone_number")
+    @Column(name = "PHONE_NUMBER")
     private String username;
 
     private String password;

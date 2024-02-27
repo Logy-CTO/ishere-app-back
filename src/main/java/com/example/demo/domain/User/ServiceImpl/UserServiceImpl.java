@@ -4,6 +4,7 @@ import com.example.demo.domain.Post.PostDTO;
 import com.example.demo.domain.Post.PostMapper;
 import com.example.demo.domain.Post.PostRepository;
 import com.example.demo.domain.User.*;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
         // Entity를 데이터베이스에 저장하고, 결과를 반환합니다.
         return userRepository.save(user);
     }
-//밑에는 세션이라 사용 x
+    //밑에는 세션이라 사용 x
     @Transactional
     @Override
     public LoginDto loginUser(LoginDto loginDto, HttpSession session) {
@@ -72,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
         return new LoginDto(user.getPhoneNumber());
     }
-//여기까지 사용 x
+    //여기까지 사용 x
     @Override
     public List<PostDTO> getUserPosts(HttpSession session) {
         Long loggedInUserId = (Long) session.getAttribute("userId");
@@ -100,7 +101,14 @@ public class UserServiceImpl implements UserService {
                 .map(postMapper::toDto)
                 .collect(Collectors.toList());
     }
-
+    public String findUserNameByPhoneNumber(String phoneNumber) {
+        User user = userRepository.findByPhoneNumber(phoneNumber);
+        return user.getUserName();
+    }
+    public String findAreaNameByPhoneNumber(String phoneNumber){
+        User user = userRepository.findByPhoneNumber(phoneNumber);
+        return user.getAreaName();
+    }
     public void updateProfile(SignUpDto signUpDto, HttpSession session) {
         Long loggedInUserId = (Long) session.getAttribute("userId");
 

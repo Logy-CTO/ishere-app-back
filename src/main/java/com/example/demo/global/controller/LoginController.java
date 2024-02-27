@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.http.ResponseEntity;
+
 import java.util.Map;
 
 @Slf4j
@@ -24,14 +26,18 @@ public class LoginController {
     private final JwtService jwtService;
 
     @PostMapping(value = "/loginuser", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Token login(@RequestBody Map<String, String> user) {
+    public ResponseEntity<Token> login(@RequestBody Map<String, String> user) {
         log.info("PhoneNumber = {}", user.get("username"));
         UserEntity member = jwtUserRepository.findByUsername(user.get("username"));
 
         Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRole());
-        log.info("getroleeeee = {}", member.getRole());
+        log.info("getrole = {}", member.getRole());
         jwtService.login(tokenDto);
-        return tokenDto;
+
+        // 토큰을 헤더에 추가하여 응답
+        return ResponseEntity.ok()
+                .header("Authorization", "Bearer " + tokenDto.getAccessToken())
+                .body(tokenDto);
     }
 
 }

@@ -9,16 +9,13 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "Post")
+@Table(name = "post")
 
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "POST_ID")
     private int postId;
-
-    @Column(name = "USER_ID")
-    private long userId;
 
     @Column(name = "CATEGORY_TYPE")
     private String categoryType;
@@ -35,9 +32,6 @@ public class Post {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "LOCATION")
-    private double location;
-
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
@@ -50,6 +44,8 @@ public class Post {
     private Double xLoc;
     @Column(name = "Y_LOC")
     private Double yLoc;
+    @Column(name = "USER_NAME")
+    private String userName;
 
     @Builder
     public Post(int postId,
@@ -59,26 +55,25 @@ public class Post {
                 byte immediateCase,
                 int reward,
                 String description,
-                double location,
                 LocalDateTime createdAt,
                 byte transactionStatus,
                 String areaName,
                 double xLoc,
-                double yLoc)
+                double yLoc,
+                String userName)
     {
         this.postId = postId;
-        this.userId = userId;
         this.categoryType = categoryType;
         this.postTitle = postTitle;
         this.immediateCase = immediateCase;
         this.reward = reward;
         this.description = description;
-        this.location = location;
         this.createdAt = createdAt;
         this.transactionStatus = transactionStatus;
         this.areaName = areaName;
         this.xLoc = xLoc;
         this.yLoc = yLoc;
+        this.userName = userName;
     }
 
     public Post() {

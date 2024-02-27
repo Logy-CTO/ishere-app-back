@@ -3,18 +3,16 @@ package com.example.demo.global.security.token;
 import com.example.demo.global.entity.RefreshToken;
 import com.example.demo.global.entity.Token;
 import com.example.demo.global.security.service.CustomUserDetailsService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
+import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +28,14 @@ import java.util.Date;
  * validate() 메서드를 사용하여 토큰의 유효성을 검사할 수 있습니다.
  */
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
@@ -50,10 +55,12 @@ public class JwtTokenProvider {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    private long accessTokenValidTime = 10 * 60 * 1000L; // 10분(밀리초)
-
+    private long accessTokenValidTime = 60 * 60 * 1000L; // 10분(밀리초) <테스트를위해 1시간으로설정>
     private long refreshTokenValidTime = 30 * 60 * 1000L; // 30분(밀리초)
 
+    //private long accessTokenValidTime = 30 * 60 * 1000L; // 30분(밀리초)
+    //private long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L; // 14일(밀리초)
+    Date now = new Date();
 
     // 주어진 사용자 이름, 역할 및 만료 시간을 이용하여 JWT 토큰을 생성하는 메서드
     public Token createAccessToken(String username, String role) {
@@ -62,6 +69,7 @@ public class JwtTokenProvider {
         //Access Token
         String accessToken = Jwts.builder()
                 .claim("username", username) // 사용자 이름(Claim) 추가
+                .setSubject(username) // 사용자 이름을 Subject로 설정
                 .claim("role", role) // 사용자 역할(Claim) 추가
                 .setIssuedAt(new Date(System.currentTimeMillis())) // 토큰 발급 시간 설정
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidTime)) // 토큰 만료 시간 설정
@@ -71,6 +79,7 @@ public class JwtTokenProvider {
         //Refresh Token
         String refreshToken =  Jwts.builder()
                 .claim("username", username) // 사용자 이름(Claim) 추가
+                .setSubject(username) // 사용자 이름을 Subject로 설정
                 .claim("role", role) // 사용자 역할(Claim) 추가
                 .setIssuedAt(new Date(System.currentTimeMillis())) // 토큰 발급 시간 설정
                 .setExpiration(new Date(System.currentTimeMillis() +  refreshTokenValidTime)) // 토큰 만료 시간 설정
@@ -79,6 +88,7 @@ public class JwtTokenProvider {
 
         return Token.builder().accessToken(accessToken).refreshToken(refreshToken).key(username).build();
     }
+
 
     public String validateRefreshToken(RefreshToken refreshTokenObj){
 
@@ -123,15 +133,48 @@ public class JwtTokenProvider {
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(this.getUserPk(token));
+        String username = this.getUserPk(token);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+        // Add logging to check the extracted username
+        System.out.println("Username extracted from token: " + username);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
-    // 토큰에서 회원 정보 추출
+
     public String getUserPk(String token) {
-        return Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(token).getBody().getSubject();
+        try {
+            // 토큰 파싱 전에 토큰을 출력
+            System.out.println("Received token: " + token);
+
+            Jws<Claims> claims = Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(token);
+            Claims body = claims.getBody();
+
+            // 클레임에서 사용자 이름을 추출
+            String username = body.getSubject();
+
+            if (username != null) {
+                // 토큰의 전체 클레임을 출력
+                System.out.println("Token claims: " + body);
+
+                // 추출된 사용자 이름을 반환
+                return username;
+            } else if (body.containsKey("username")) {
+                // 클레임에 "username"이라는 키가 존재하면 해당 값을 사용
+                String alternativeUsername = body.get("username", String.class);
+                System.out.println("Using alternative username from claim: " + alternativeUsername);
+                return alternativeUsername;
+            } else {
+                System.out.println("Username is null in the token.");
+                return null;
+            }
+        } catch (Exception e) {
+            // 토큰 파싱 중에 발생한 예외를 로그로 출력
+            System.out.println("Token parsing error: " + e.getMessage());
+            return null;
+        }
     }
 
     // Request의 Header에서 token 값을 가져옵니다. "Authorization" : "TOKEN값'
+
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
@@ -141,9 +184,17 @@ public class JwtTokenProvider {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (Exception e) {
-            return false;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+
+            log.info("Invalid JWT Token", e);
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT Token", e);
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT Token", e);
+        } catch (IllegalArgumentException e) {
+            log.info("JWT claims string is empty.", e);
         }
+        return false;
     }
 
 }
