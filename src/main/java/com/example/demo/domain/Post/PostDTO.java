@@ -52,8 +52,5 @@ public class PostDTO {
         this.yLoc = yLoc;
         this.userName = userName;
     }
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 
 }
