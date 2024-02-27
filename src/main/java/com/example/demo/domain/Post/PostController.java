@@ -1,5 +1,6 @@
 package com.example.demo.domain.Post;
 
+import com.example.demo.domain.User.*;
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ public class PostController {
 
     private final PostRepository postRepository;
     private final PostService postService;
-
+    private final UserService userService;
 
     @GetMapping("/main/{page}")
     public List<Post> getMainPosts(@PathVariable int page) {
@@ -51,18 +52,15 @@ public class PostController {
         // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        // CustomUserDetails에서 사용자 ID를 얻어 PostDTO에 설정
-        postDTO.setUserName(customUserDetails.getUsername());
+        // CustomUserDetails에서 phone_number를 얻어 UserService를 통해 user_name을 찾음
+        String phoneNumber = customUserDetails.getUsername();
+        String userName = userService.findUserNameByPhoneNumber(phoneNumber);
+
+        // 찾은 user_name을 PostDTO에 설정
+        postDTO.setUserName(userName);
 
         // 게시글 작성
         return ResponseEntity.ok(postService.writePost(postDTO));
     }
 
-
-    //@GetMapping("/mypage")// 내가 쓴글 확인(마이페이지)
-    //public List<PostDTO> getMyPage(HttpSession session) {
-     //   long userId = (long) session.getAttribute("userId");
-     //    List<PostDTO> posts = postService.getPostsByUserId(userId);
-     //   return posts;
-    //}//List<PostDTO> 객체를 JSON 형태로 변환하여 응답
 }

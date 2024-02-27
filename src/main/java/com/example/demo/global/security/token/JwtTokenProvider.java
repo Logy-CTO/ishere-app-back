@@ -55,7 +55,7 @@ public class JwtTokenProvider {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    private long accessTokenValidTime = 10 * 60 * 1000L; // 10분(밀리초)
+    private long accessTokenValidTime = 60 * 60 * 1000L; // 10분(밀리초) <테스트를위해 1시간으로설정>
     private long refreshTokenValidTime = 30 * 60 * 1000L; // 30분(밀리초)
 
     //private long accessTokenValidTime = 30 * 60 * 1000L; // 30분(밀리초)
@@ -68,36 +68,43 @@ public class JwtTokenProvider {
 
         //Access Token
         String accessToken = Jwts.builder()
+                .claim("username", username) // 사용자 이름(Claim) 추가
                 .setSubject(username) // 사용자 이름을 Subject로 설정
                 .claim("role", role) // 사용자 역할(Claim) 추가
-                .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + accessTokenValidTime)) // set Expire Time
+                .setIssuedAt(new Date(System.currentTimeMillis())) // 토큰 발급 시간 설정
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidTime)) // 토큰 만료 시간 설정
                 .signWith(SignatureAlgorithm.HS256, accessSecretKey)  // 시크릿 키로 서명
                 .compact(); // 토큰을 문자열로 변환하여 반환
 
         //Refresh Token
         String refreshToken =  Jwts.builder()
+                .claim("username", username) // 사용자 이름(Claim) 추가
                 .setSubject(username) // 사용자 이름을 Subject로 설정
                 .claim("role", role) // 사용자 역할(Claim) 추가
-                .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + refreshTokenValidTime)) // set Expire Time
+                .setIssuedAt(new Date(System.currentTimeMillis())) // 토큰 발급 시간 설정
+                .setExpiration(new Date(System.currentTimeMillis() +  refreshTokenValidTime)) // 토큰 만료 시간 설정
                 .signWith(SignatureAlgorithm.HS256, refreshSecretKey)// 시크릿 키로 서명
                 .compact(); // 토큰을 문자열로 변환하여 반환
 
         return Token.builder().accessToken(accessToken).refreshToken(refreshToken).key(username).build();
     }
 
+
     public String validateRefreshToken(RefreshToken refreshTokenObj){
 
         // refresh 객체에서 refreshToken 추출
         String refreshToken = refreshTokenObj.getRefreshToken();
+
         try {
+            // 검증
             Jws<Claims> claims = Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(refreshToken);
+
             //refresh 토큰의 만료시간이 지나지 않았을 경우, 새로운 access 토큰을 생성합니다.
             if (!claims.getBody().getExpiration().before(new Date())) {
-                return recreationAccessToken(claims.getBody().get("username").toString(), claims.getBody().get("roles"));
+                return recreationAccessToken(claims.getBody().get("sub").toString(), claims.getBody().get("roles"));
             }
         }catch (Exception e) {
+
             //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.
             return null;
 
@@ -107,7 +114,8 @@ public class JwtTokenProvider {
     }
 
     public String recreationAccessToken(String username, Object roles){
-        Claims claims = Jwts.claims().setSubject(username);  // JWT payload 에 저장되는 정보단위
+
+        Claims claims = (Claims) Jwts.claims().setSubject(username); // JWT payload 에 저장되는 정보단위
         claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
 
@@ -119,7 +127,7 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS256, accessSecretKey)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
                 .compact();
-        System.out.println(accessToken);
+
         return accessToken;
     }
 
@@ -166,6 +174,7 @@ public class JwtTokenProvider {
     }
 
     // Request의 Header에서 token 값을 가져옵니다. "Authorization" : "TOKEN값'
+
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
