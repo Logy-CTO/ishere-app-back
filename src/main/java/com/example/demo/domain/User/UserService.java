@@ -17,5 +17,7 @@ public interface UserService {
     void updateProfile(SignUpDto signUpDto, HttpSession session);
     String findUserNameByPhoneNumber(String phoneNumber);
     String findAreaNameByPhoneNumber(String phoneNumber);
+
+    boolean checkPinNumber(String phoneNumber, String pinNumber);
 }
 

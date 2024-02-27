@@ -15,4 +15,5 @@ public class SignUpDto{
     private String bankName;
     private String interestPost;
     private String realName;
+    private String pinNumber;
 }

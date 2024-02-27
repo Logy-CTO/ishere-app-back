@@ -15,6 +15,7 @@ public abstract class UserMapper {
                 .phoneNumber(signupDto.getPhoneNumber())
                 .realName(signupDto.getRealName() != null ? signupDto.getRealName() : "")
                 .userName(signupDto.getUserName())
+                .pinNumber(signupDto.getPinNumber())
                 .build();
     }
 }

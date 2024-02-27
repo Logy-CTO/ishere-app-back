@@ -47,6 +47,9 @@ public class User {
     @Column(name = "ROLE")
     private String role;
 
+    @Column(name = "pin_number")
+    private String pinNumber;
+
     @Builder
     public User(Long id,
                 String accountNumber,
@@ -57,7 +60,8 @@ public class User {
                 String realName,
                 String userName,
                 String password,
-                String role)
+                String role,
+                String pinNumber)
     {
         this.id = id;
         this.accountNumber = accountNumber;
@@ -69,5 +73,6 @@ public class User {
         this.areaName = areaName;
         this.password = password;
         this.role = role;
+        this.pinNumber = pinNumber;
     }
 }

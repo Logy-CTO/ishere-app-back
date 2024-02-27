@@ -4,6 +4,7 @@ import com.example.demo.domain.Post.PostDTO;
 import com.example.demo.domain.Post.PostMapper;
 import com.example.demo.domain.Post.PostRepository;
 import com.example.demo.domain.User.*;
+import com.google.type.PhoneNumber;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,13 +41,22 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("이미 등록된 전화번호입니다.");
         }
 
-        // ** usermapper에서 username,phonenumber를 넣어줘서 따로 선언 x
-        User user = usermapper.signUpDtoToUser(signUpDto); // signUpDto를 User로 형변환합니다.
+        // User Entity 생성
+        User user = usermapper.signUpDtoToUser(signUpDto);
 
-        user.setPassword(bCryptPasswordEncoder.encode("울트라킹왕짱코딩의신택수")); // User Entity에 암호화된 패스워드를 설정합니다.
-        user.setRole("ROLE_ADMIN"); // 권한 일시 부여
+        // 패스워드 암호화
+        user.setPassword(bCryptPasswordEncoder.encode("울트라킹왕짱코딩의신택수"));
 
-        // Entity를 데이터베이스에 저장하고, 결과를 반환합니다.
+        // 권한 부여
+        user.setRole("ROLE_ADMIN");
+
+        // 핀 번호 암호화 및 저장
+        String pinNumber = signUpDto.getPinNumber(); // 사용자의 핀 번호를 문자열로 변환
+        String encryptedPinNumber = bCryptPasswordEncoder.encode(pinNumber); // 핀 번호를 암호화
+        user.setPinNumber(encryptedPinNumber); // 암호화된 핀 번호를 저장
+
+
+        // User Entity를 데이터베이스에 저장하고 결과를 반환
         return userRepository.save(user);
     }
     //밑에는 세션이라 사용 x
@@ -109,6 +119,21 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByPhoneNumber(phoneNumber);
         return user.getAreaName();
     }
+
+    @Override
+    public boolean checkPinNumber(String phoneNumber, String pinNumber) {
+        // 사용자 이름으로 사용자를 검색합니다.
+        User user = userRepository.findByPhoneNumber(phoneNumber);
+
+        // 사용자가 존재하지 않거나 핀 번호가 null이면 false를 반환합니다.
+        if (user == null || user.getPinNumber() == null) {
+            return false;
+        }
+
+        // 저장된 핀 번호와 입력된 핀 번호를 비교하여 일치하는지 확인하고 결과를 반환합니다.
+        return bCryptPasswordEncoder.matches(pinNumber, user.getPinNumber());
+    }
+
     public void updateProfile(SignUpDto signUpDto, HttpSession session) {
         Long loggedInUserId = (Long) session.getAttribute("userId");
 

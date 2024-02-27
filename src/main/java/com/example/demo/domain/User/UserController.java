@@ -44,10 +44,20 @@ public class UserController {
                 registeredUser.getAreaName(),
                 registeredUser.getBankName(),
                 registeredUser.getInterestPost(),
-                registeredUser.getRealName()
+                registeredUser.getRealName(),
+                registeredUser.getPinNumber()
         );
     }
 
+    @PostMapping("/check-pin")
+    public ResponseEntity<String> checkPinNumber(@RequestBody SignUpDto request) {
+        boolean isValid = userService.checkPinNumber(request.getPhoneNumber(), request.getPinNumber());
+        if (isValid) {
+            return ResponseEntity.ok("Valid Pin Number");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Pin Number");
+        }
+    }
 
     /*** 세션방식 사용안함
      * @GetMapping("/interest")
