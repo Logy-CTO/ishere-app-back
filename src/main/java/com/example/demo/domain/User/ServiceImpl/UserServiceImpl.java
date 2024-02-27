@@ -105,6 +105,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByPhoneNumber(phoneNumber);
         return user.getUserName();
     }
+    public String findAreaNameByPhoneNumber(String phoneNumber){
+        User user = userRepository.findByPhoneNumber(phoneNumber);
+        return user.getAreaName();
+    }
     public void updateProfile(SignUpDto signUpDto, HttpSession session) {
         Long loggedInUserId = (Long) session.getAttribute("userId");
 

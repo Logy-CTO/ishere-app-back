@@ -55,9 +55,11 @@ public class PostController {
         // CustomUserDetails에서 phone_number를 얻어 UserService를 통해 user_name을 찾음
         String phoneNumber = customUserDetails.getUsername();
         String userName = userService.findUserNameByPhoneNumber(phoneNumber);
+        String areaName = userService.findAreaNameByPhoneNumber(phoneNumber);
 
-        // 찾은 user_name을 PostDTO에 설정
+        // 찾은 user_name, area_name을 PostDTO에 설정
         postDTO.setUserName(userName);
+        postDTO.setAreaName(areaName);
 
         // 게시글 작성
         return ResponseEntity.ok(postService.writePost(postDTO));
