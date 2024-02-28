@@ -1,6 +1,7 @@
 package com.example.demo.domain.User;
 
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Getter
 @Setter
@@ -16,4 +17,5 @@ public class SignUpDto{
     private String interestPost;
     private String realName;
     private String pinNumber;
+
 }

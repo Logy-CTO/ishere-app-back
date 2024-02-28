@@ -11,7 +11,6 @@ import javax.persistence.*;
 import javax.persistence.OneToMany;
 @Entity
 @Getter
-@Setter
 @Table(name = "user")
 @NoArgsConstructor
 public class User {
@@ -74,5 +73,40 @@ public class User {
         this.password = password;
         this.role = role;
         this.pinNumber = pinNumber;
+    }
+
+    // ("/update") -> setter를 쓰지 않기 위한 조치
+    public void updateUserName(String userName) {
+        if (userName != null) {
+            this.userName = userName;
+        }
+    }
+    public void updateRealName(String realName) {
+        if (realName != null) {
+            this.realName = realName;
+        }
+    }
+    public void updateBankName(String bankName) {
+        if (bankName != null) {
+            this.bankName = bankName;
+        }
+    }
+
+    public void updateAccountNumber(String accountNumber) {
+        if (accountNumber != null) {
+            this.accountNumber = accountNumber;
+        }
+    }
+    //회원가입 Dto
+    public User(String userName, String phoneNumber, String password, String role, String realName, String bankName, String accountNumber, String areaName, String interestPost) {
+        this.userName = userName;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.role = role;
+        this.realName = realName;
+        this.bankName = bankName;
+        this.accountNumber = accountNumber;
+        this.areaName = areaName;
+        this.interestPost = interestPost;
     }
 }

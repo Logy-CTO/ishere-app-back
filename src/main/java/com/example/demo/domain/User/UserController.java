@@ -3,8 +3,11 @@ package com.example.demo.domain.User;
 import com.example.demo.domain.Post.Post;
 import com.example.demo.domain.Post.PostDTO;
 import com.example.demo.domain.Post.PostRepository;
+import com.example.demo.global.security.principal.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -13,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.ui.Model;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/user")
@@ -34,19 +38,9 @@ public class UserController {
     //컨트롤러에서 @ModelAttribute를 사용하면 HTML form에서 전송된 데이터를 받을 수 있습니다.
     // 하지만 JSON 형식의 데이터를 받기 위해서는 @RequestBody 어노테이션을 사용해야 합니다.  //플러터로 변경시 @requestbody로 변경
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SignUpDto registerUser(@RequestBody SignUpDto signUpDto) {
+    public ResponseEntity<User> registerUser(@RequestBody SignUpDto signUpDto) {
         User registeredUser = userService.registerUser(signUpDto);
-        return new SignUpDto(
-                registeredUser.getUserName(),
-                registeredUser.getPhoneNumber(),
-                registeredUser.getId(),
-                registeredUser.getAccountNumber(),
-                registeredUser.getAreaName(),
-                registeredUser.getBankName(),
-                registeredUser.getInterestPost(),
-                registeredUser.getRealName(),
-                registeredUser.getPinNumber()
-        );
+        return ResponseEntity.ok(registeredUser);
     }
 
     @PostMapping("/check-pin")
@@ -58,6 +52,28 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Pin Number");
         }
     }
+
+    //사용자 마이페이지에서 개인정보 수정(닉네임, 은행계좌 정보 -> 나중에 분리해야할듯)
+    @PostMapping("/update")
+    public ResponseEntity<User> updateProfile(@RequestBody SignUpDto signUpDto) {
+        // SecurityContext에서 Authentication 객체를 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
+        }
+
+        // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        //customUserDetails.getUsername() -> PhoneNumber임
+        signUpDto.setPhoneNumber(customUserDetails.getUsername());
+
+        // 사용자 프로필 업데이트
+        User updatedUser = userService.updateProfile(signUpDto);
+        return ResponseEntity.ok(updatedUser);
+    }
+
 
     /*** 세션방식 사용안함
      * @GetMapping("/interest")

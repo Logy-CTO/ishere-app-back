@@ -14,10 +14,11 @@ public interface UserService {
 
     LoginDto loginUser(LoginDto loginDto, HttpSession session);
     List<PostDTO> getUserPosts(HttpSession session);
-    void updateProfile(SignUpDto signUpDto, HttpSession session);
     String findUserNameByPhoneNumber(String phoneNumber);
     String findAreaNameByPhoneNumber(String phoneNumber);
 
     boolean checkPinNumber(String phoneNumber, String pinNumber);
+
+    User updateProfile(SignUpDto signUpDto);
 }
 
