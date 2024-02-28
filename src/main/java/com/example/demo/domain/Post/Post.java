@@ -2,6 +2,7 @@ package com.example.demo.domain.Post;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Table(name = "post")
-
+@NoArgsConstructor
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,7 +77,4 @@ public class Post {
         this.userName = userName;
     }
 
-    public Post() {
-
-    }
 }

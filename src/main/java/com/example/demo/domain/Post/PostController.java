@@ -22,24 +22,25 @@ public class PostController {
     private final PostRepository postRepository;
     private final PostService postService;
     private final UserService userService;
-
+    //사용자에게 보여지는 최신 게시글
     @GetMapping("/main/{page}")
     public List<Post> getMainPosts(@PathVariable int page) {
         Pageable pageable = PageRequest.of(page, 10); // 10개의 게시물을 한 페이지에 표시
         Page<Post> postPage = postRepository.findAll(pageable);
         return postPage.getContent();
     }
-
+    //게시글 정렬
     @GetMapping("/list")
     public List<Post> getPostList() {
         return postRepository.findAll();
     }
-
+    //게시글 세기
     @GetMapping("/count")
     public long getPostCount() {
         return postRepository.count();
     }
 
+    //글쓰기
     @PostMapping("/upload")
     public ResponseEntity writePost(@RequestBody PostDTO postDTO) {
         // SecurityContext에서 Authentication 객체를 가져오기

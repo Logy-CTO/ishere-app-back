@@ -17,6 +17,7 @@ public class PostService {
         return postRepository.findAll();
     }
 
+    //마이페이지 본인이 작성한 게시글 조회
     public List<PostDTO> getPostsByUserName(String userName) {
         List<Post> posts = postRepository.findByUserName(userName);
         List<PostDTO> postDTOs = new ArrayList<>();
@@ -28,21 +29,9 @@ public class PostService {
 
         return postDTOs;
     }
+    //글쓰기
     public Post writePost(PostDTO postDto) {
-        Post post = Post.builder()
-                .postId(postDto.getPostId())
-                .categoryType(postDto.getCategoryType())
-                .postTitle(postDto.getPostTitle())
-                .immediateCase(postDto.getImmediateCase())
-                .reward(postDto.getReward())
-                .description(postDto.getDescription())
-                .createdAt(LocalDateTime.now()) // 현재 시간으로 설정
-                .transactionStatus((byte) 0) // TransactionStatus를 항상 0으로 초기화
-                .areaName(postDto.getAreaName())
-                .xLoc(postDto.getXLoc())
-                .yLoc(postDto.getYLoc())
-                .userName(postDto.getUserName())
-                .build();
+        Post post = postDto.toWrite();
         return postRepository.save(post);
     }
 }//PostDTO::fro

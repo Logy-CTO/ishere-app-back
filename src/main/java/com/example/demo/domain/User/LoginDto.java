@@ -1,13 +1,9 @@
 package com.example.demo.domain.User;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import lombok.NoArgsConstructor;
-
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+//@Data 어노테이션은 @Getter, @Setter, @ToString,
+//@EqualsAndHashCode, @RequiredArgsConstructor,@NoArgsConstructor 등을 포함
 public class LoginDto {
 
     private String phoneNumber;

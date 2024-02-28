@@ -6,10 +6,10 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
+
 @Data
+//@Data 어노테이션은 @Getter, @Setter, @ToString,
+//@EqualsAndHashCode, @RequiredArgsConstructor,@NoArgsConstructor 등을 포함
 public class PostDTO {
 
     private int postId;
@@ -24,34 +24,23 @@ public class PostDTO {
     private double xLoc;
     private double yLoc;
     private String userName;
-    @Builder
-    public PostDTO(
-            int postId,
-            String categoryType,
-            String postTitle,
-            byte immediateCase,
-            int reward,
-            String description,
-            LocalDateTime createdAt,
-            byte transactionStatus,
-            String areaName,
-            double xLoc,
-            double yLoc,
-            String userName
-    )
-    {
-        this.postId = postId;
-        this.categoryType = categoryType;
-        this.postTitle = postTitle;
-        this.immediateCase = immediateCase;
-        this.reward = reward;
-        this.description = description;
-        this.createdAt = createdAt;
-        this.transactionStatus = transactionStatus;
-        this.areaName = areaName;
-        this.xLoc = xLoc;
-        this.yLoc = yLoc;
-        this.userName = userName;
+
+    //글쓰기
+    public Post toWrite() {
+        return Post.builder()
+                .postId(this.postId)
+                .categoryType(this.categoryType)
+                .postTitle(this.postTitle)
+                .immediateCase(this.immediateCase)
+                .reward(this.reward)
+                .description(this.description)
+                .createdAt(LocalDateTime.now()) // 현재 시간으로 설정
+                .transactionStatus((byte) 0) // TransactionStatus를 항상 0으로 초기화
+                .areaName(this.areaName)
+                .xLoc(this.xLoc)
+                .yLoc(this.yLoc)
+                .userName(this.userName)
+                .build();
     }
 
 }
