@@ -26,39 +26,25 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final UserMapper usermapper;
+    private final UserMapper userMapper;
     private final PostMapper postMapper;
 
     @Transactional
-    @Override
-    public User registerUser(@RequestBody SignUpDto signUpDto) {
+    public User registerUser(SignUpDto signUpDto) {
         // userName, phoneNumber 중복 체크
-        if(userRepository.existsByUserName(signUpDto.getUserName())) {
+        if (userRepository.existsByUserName(signUpDto.getUserName())) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
-        if(userRepository.existsByPhoneNumber(signUpDto.getPhoneNumber())) {
+        if (userRepository.existsByPhoneNumber(signUpDto.getPhoneNumber())) {
             throw new IllegalArgumentException("이미 등록된 전화번호입니다.");
         }
 
-        // User Entity 생성
-        User user = usermapper.signUpDtoToUser(signUpDto);
-
-        // 패스워드 암호화
-        user.setPassword(bCryptPasswordEncoder.encode("울트라킹왕짱코딩의신택수"));
-
-        // 권한 부여
-        user.setRole("ROLE_ADMIN");
-
-        // 핀 번호 암호화 및 저장
-        String pinNumber = signUpDto.getPinNumber(); // 사용자의 핀 번호를 문자열로 변환
-        String encryptedPinNumber = bCryptPasswordEncoder.encode(pinNumber); // 핀 번호를 암호화
-        user.setPinNumber(encryptedPinNumber); // 암호화된 핀 번호를 저장
-
-
-        // User Entity를 데이터베이스에 저장하고 결과를 반환
+        // User Entity 생성 후 저장
+        User user = userMapper.signUpDtoToUser(signUpDto);
         return userRepository.save(user);
     }
+
     //밑에는 세션이라 사용 x
     @Transactional
     @Override
@@ -83,6 +69,7 @@ public class UserServiceImpl implements UserService {
 
         return new LoginDto(user.getPhoneNumber());
     }
+
     //여기까지 사용 x
     @Override
     public List<PostDTO> getUserPosts(HttpSession session) {
@@ -111,11 +98,13 @@ public class UserServiceImpl implements UserService {
                 .map(postMapper::toDto)
                 .collect(Collectors.toList());
     }
+
     public String findUserNameByPhoneNumber(String phoneNumber) {
         User user = userRepository.findByPhoneNumber(phoneNumber);
         return user.getUserName();
     }
-    public String findAreaNameByPhoneNumber(String phoneNumber){
+
+    public String findAreaNameByPhoneNumber(String phoneNumber) {
         User user = userRepository.findByPhoneNumber(phoneNumber);
         return user.getAreaName();
     }
@@ -134,25 +123,20 @@ public class UserServiceImpl implements UserService {
         return bCryptPasswordEncoder.matches(pinNumber, user.getPinNumber());
     }
 
-    public void updateProfile(SignUpDto signUpDto, HttpSession session) {
-        Long loggedInUserId = (Long) session.getAttribute("userId");
+    //user에서 setter를 사용하지 않고 메서드로 수정
+    @Override
+    @Transactional
+    public User updateProfile(SignUpDto signUpDto) {
+        User user = userRepository.findByPhoneNumber(signUpDto.getPhoneNumber());
 
-        if (loggedInUserId == null) {
-            // 로그인되지 않은 사용자 처리
-            throw new RuntimeException("User not logged in.");
-        }
+        user.updateUserName(signUpDto.getUserName());
+        user.updateBankName(signUpDto.getBankName());
+        user.updateRealName(signUpDto.getRealName());
+        user.updateAccountNumber(signUpDto.getAccountNumber());
 
-        User existingUser = userRepository.findById(loggedInUserId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // 업데이트할 필드들만 변경
-        existingUser.setRealName(signUpDto.getRealName());
-        existingUser.setUserName(signUpDto.getUserName());
-        existingUser.setBankName(signUpDto.getBankName());
-        existingUser.setAccountNumber(signUpDto.getAccountNumber());
-
-        // 변경된 정보를 저장
-        userRepository.save(existingUser);
+        return userRepository.save(user);
     }
+
+
 
 }
