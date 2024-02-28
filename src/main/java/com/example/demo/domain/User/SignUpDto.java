@@ -1,12 +1,11 @@
 package com.example.demo.domain.User;
 
 import lombok.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
-@AllArgsConstructor
+
+@Data
+//@Data 어노테이션은 @Getter, @Setter, @ToString,
+//@EqualsAndHashCode, @RequiredArgsConstructor,@NoArgsConstructor 등을 포함
 public class SignUpDto{
     private String userName;
     private String phoneNumber;

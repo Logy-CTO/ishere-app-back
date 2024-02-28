@@ -25,24 +25,16 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
-    //컨트롤러에서 @ModelAttribute를 사용하면 HTML form에서 전송된 데이터를 받을 수 있습니다.
-    // 하지만 JSON 형식의 데이터를 받기 위해서는 @RequestBody 어노테이션을 사용해야 합니다.  //플러터로 변경시 @requestbody로 변경
+    //회원가입
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> registerUser(@RequestBody SignUpDto signUpDto) {
         User registeredUser = userService.registerUser(signUpDto);
         return ResponseEntity.ok(registeredUser);
     }
-
+    //핀번호(결제)
     @PostMapping("/check-pin")
     public ResponseEntity<String> checkPinNumber(@RequestBody SignUpDto request) {
         boolean isValid = userService.checkPinNumber(request.getPhoneNumber(), request.getPinNumber());
@@ -74,25 +66,4 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-
-    /*** 세션방식 사용안함
-     * @GetMapping("/interest")
-     *     public List<PostDTO> getUserPosts() {
-     *         return userService.getUserPosts();
-     *     }
-
-
-
-    @GetMapping("/editProfile")
-    public ResponseEntity<String> showEditProfileForm() {
-        // 필요한 초기 데이터 로드 등이 있다면 여기서 처리할 수 있습니다.
-        return ResponseEntity.ok("Edit Profile Form");
-    }
-
-    @PostMapping("/editProfile")
-    public ResponseEntity<String> editProfile(@ModelAttribute SignUpDto signUpDto, HttpSession session) {
-        userService.updateProfile(signUpDto, session);
-        return ResponseEntity.ok("Profile Updated");
-    }
-*/
 }
