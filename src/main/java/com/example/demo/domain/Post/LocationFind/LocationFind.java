@@ -15,10 +15,12 @@ public class LocationFind {
     @Id
     @Column(name = "POST_ID")
     private int postId;
+
     @Column(name = "X_LOC")
     private double xLoc;
     @Column(name = "Y_LOC")
     private double yLoc;
-
+    @Column(name = "IMMEDIATE_CASE")
+    private byte immediateCase;
 
 }

@@ -62,6 +62,7 @@ public class PostService {
         locationFind.setPostId(post.getPostId());
         locationFind.setXLoc(post.getXLoc());
         locationFind.setYLoc(post.getYLoc());
+        locationFind.setImmediateCase(post.getImmediateCase());
         locationFindRepository.save(locationFind);
 
         return post;
