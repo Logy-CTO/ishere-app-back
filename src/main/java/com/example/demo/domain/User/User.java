@@ -109,4 +109,12 @@ public class User {
         this.areaName = areaName;
         this.interestPost = interestPost;
     }
+    //관심목록 추가 dto
+    public void addInterestPost(String newPostId) {
+        if (this.interestPost == null) {
+            this.interestPost = newPostId;
+        } else {
+            this.interestPost += newPostId;
+        }
+    }
 }

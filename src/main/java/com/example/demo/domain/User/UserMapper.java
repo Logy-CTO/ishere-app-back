@@ -26,4 +26,5 @@ public abstract class UserMapper {
                 .pinNumber(encryptedPinNumber)
                 .build();
     }
+
 }

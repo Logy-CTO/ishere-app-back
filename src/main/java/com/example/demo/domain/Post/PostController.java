@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.Authentication;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +23,9 @@ public class PostController {
     private final PostRepository postRepository;
     private final PostService postService;
     private final UserService userService;
+    /*
+    ----------------------GetMapping------------------------
+    */
     //사용자에게 보여지는 최신 게시글
     @GetMapping("/main/{page}")
     public List<Post> getMainPosts(@PathVariable int page) {
@@ -46,6 +50,31 @@ public class PostController {
 
         return ResponseEntity.ok(postService.getPostsByUserName(userName));
     }
+
+    //사용자의 관심있는 게시글보기
+    @GetMapping("/interestPost")
+    public ResponseEntity<List<PostDTO>> getPostsByUserInterestPost(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
+        }
+
+        // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        String phoneNumber = customUserDetails.getUsername();
+
+        // 사용자의 관심 post ID 리스트를 ","스플릿해서(서비스) 가져오기
+        List<String> interestPosts = postService.getUserInterestPosts(phoneNumber);
+
+        // post ID 리스트에 해당하는 post들을 한 번의 쿼리로 가져오기
+        List<Integer> postIds = interestPosts.stream()
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+        List<PostDTO> posts = postService.getPost(postIds);
+
+        return ResponseEntity.ok(posts);
+    }
     //게시글 정렬
     @GetMapping("/list")
     public List<Post> getPostList() {
@@ -56,6 +85,10 @@ public class PostController {
     public long getPostCount() {
         return postRepository.count();
     }
+
+    /*
+    ----------------------PostMapping------------------------
+    */
 
     //글쓰기
     @PostMapping("/upload")

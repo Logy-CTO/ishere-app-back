@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
     private final UserMapper userMapper;
 
     //회원가입
@@ -84,6 +85,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    //사용자가 관심있는 게시글 추가(좋아요 누르기)
+    public void addInterestPost(String phoneNumber, InterestPostDto interestPostDto) {
+        User user = userRepository.findByPhoneNumber(phoneNumber);
+        
+        interestPostDto.addInterestPost();
+        user.addInterestPost(interestPostDto.getInterestPost());
+        userRepository.save(user);
+    }
 
 
 }
