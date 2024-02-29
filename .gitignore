@@ -39,5 +39,5 @@ out/
 
 #보안
 #ishereFirebaseAdminsdk.json
-#application-API.properties
-#application-db.properties
+application-API.properties
+application-db.properties
