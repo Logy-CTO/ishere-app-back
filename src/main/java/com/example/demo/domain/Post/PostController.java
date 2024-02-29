@@ -29,6 +29,23 @@ public class PostController {
         Page<Post> postPage = postRepository.findAll(pageable);
         return postPage.getContent();
     }
+    //사용자가 쓴 게시글 조회
+    @GetMapping("/mypage")
+    public ResponseEntity<List<PostDTO>> getPostsByUserName(PostDTO postDTO){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
+        }
+
+        // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        String phoneNumber = customUserDetails.getUsername();
+        String userName = userService.findUserNameByPhoneNumber(phoneNumber);
+
+        return ResponseEntity.ok(postService.getPostsByUserName(userName));
+    }
     //게시글 정렬
     @GetMapping("/list")
     public List<Post> getPostList() {
