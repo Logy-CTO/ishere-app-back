@@ -1,6 +1,7 @@
 package com.example.demo.global.controller;
 
 import com.example.demo.global.security.service.JwtService;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,11 @@ public class RefreshController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token이 만료되었습니다.");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body("Refresh Token이 유효합니다.");
+        // 수정: AccessToken을 Response Header에 추가
+        String accessToken = map.get("accessToken");
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("Authorization", accessToken)
+                .body("Refresh Token이 유효합니다.");
     }
 }
+
