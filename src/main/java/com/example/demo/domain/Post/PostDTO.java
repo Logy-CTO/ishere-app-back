@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 
 @Data
+@Builder
 //@Data 어노테이션은 @Getter, @Setter, @ToString,
 //@EqualsAndHashCode, @RequiredArgsConstructor,@NoArgsConstructor 등을 포함
 public class PostDTO {
@@ -42,5 +43,22 @@ public class PostDTO {
                 .userName(this.userName)
                 .build();
     }
+    public static PostDTO fromEntity(Post post) {
+        return PostDTO.builder()
+                .postId(post.getPostId())
+                .categoryType(post.getCategoryType())
+                .postTitle(post.getPostTitle())
+                .immediateCase(post.getImmediateCase())
+                .reward(post.getReward())
+                .description(post.getDescription())
+                .createdAt(post.getCreatedAt())
+                .transactionStatus(post.getTransactionStatus())
+                .areaName(post.getAreaName())
+                .xLoc(post.getXLoc())
+                .yLoc(post.getYLoc())
+                .userName(post.getUserName())
+                .build();
+    }
+
 
 }

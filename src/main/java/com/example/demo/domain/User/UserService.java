@@ -20,5 +20,6 @@ public interface UserService {
     boolean checkPinNumber(String phoneNumber, String pinNumber);
     //마이페이지 수정
     User updateProfile(SignUpDto signUpDto);
+    void addInterestPost(String phoneNumber, InterestPostDto interestPostDto);
 }
 
