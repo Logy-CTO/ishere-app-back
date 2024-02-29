@@ -50,7 +50,6 @@ public class Post {
 
     @Builder
     public Post(int postId,
-                long userId,
                 String categoryType,
                 String postTitle,
                 byte immediateCase,
