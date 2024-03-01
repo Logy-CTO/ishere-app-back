@@ -2,15 +2,16 @@ package com.example.demo.domain.Post;
 
 import java.time.LocalDateTime;
 
-import lombok.*;
 
-import java.time.LocalDateTime;
-
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
 @Builder
-//@Data 어노테이션은 @Getter, @Setter, @ToString,
-//@EqualsAndHashCode, @RequiredArgsConstructor,@NoArgsConstructor 등을 포함
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostDTO {
 
     private int postId;
@@ -43,6 +44,7 @@ public class PostDTO {
                 .userName(this.userName)
                 .build();
     }
+
     public static PostDTO fromEntity(Post post) {
         return PostDTO.builder()
                 .postId(post.getPostId())
@@ -59,6 +61,4 @@ public class PostDTO {
                 .userName(post.getUserName())
                 .build();
     }
-
-
 }
