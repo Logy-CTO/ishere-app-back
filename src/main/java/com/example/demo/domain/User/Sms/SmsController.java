@@ -9,6 +9,7 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import javax.annotation.PostConstruct;
+import java.util.Map;
 import java.util.Random;
 
 @RequiredArgsConstructor
@@ -33,7 +34,8 @@ public class SmsController {
     //api연동
     @PostMapping("/sendSMS")
     @ResponseBody
-    public SingleMessageSentResponse sendSMS(@RequestParam String to, HttpSession session) {
+    public SingleMessageSentResponse sendSMS(@RequestBody Map<String, String> body, HttpSession session) {
+        String username = body.get("username");
         Random rand = new Random();
         String numStr = "";
         for(int i=0; i<6; i++){
@@ -45,7 +47,7 @@ public class SmsController {
         Message message = new Message();
         // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
         message.setFrom("01064371608");//테스트할 때만 국현우 번호 사용하여 발신
-        message.setTo(to);//수신 -> HTML부분에서 JS로 수신자 번호 받음
+        message.setTo(username);//수신 -> HTML부분에서 JS로 수신자 번호 받음
         message.setText("[Ishere] 이즈히어 인증번호는 [" + numStr + "] 입니다.");
 
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
@@ -54,10 +56,13 @@ public class SmsController {
     }
     @PostMapping("/verifySMS")
     @ResponseBody
-    public boolean verifySMS(@RequestParam String inputNum, HttpSession session) {
+    public boolean verifySMS(@RequestBody Map<String, String> body, HttpSession session) {
         // 세션에 저장된 인증번호와 생성 시간.
         String authNum = (String) session.getAttribute("authNum");
         long creationTime = (Long) session.getAttribute("creationTime");
+
+        // 사용자가 입력한 인증번호를 요청 본문으로부터 가져옴
+        String inputNum = body.get("inputNum");
 
         // 현재 시간(밀리초 단위)을 가져온 후 대입.
         long currentTime = System.currentTimeMillis();

@@ -3,6 +3,7 @@ package com.example.demo.global.controller;
 import com.example.demo.global.security.service.TokenBlacklistService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,8 @@ public class LogoutController {
         String accessToken = token.replace("Bearer ", "");
         // 블랙리스트에 토큰 추가
         tokenBlacklistService.addToBlacklist(accessToken, LocalDateTime.now());
+        // 현재 SecurityContext를 클리어하여 사용자의 로그인 상태를 갱신
+
         // 성공적으로 로그아웃 처리되었음을 응답
         return ResponseEntity.status(HttpStatus.OK).build();
     }
