@@ -5,6 +5,8 @@ import com.example.demo.global.security.Repository.TokenBlacklistRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class TokenBlacklistService {
@@ -20,5 +22,9 @@ public class TokenBlacklistService {
         tokenBlacklist.setToken(token);
         tokenBlacklist.setExpirationTime(expirationTime); // 만료 시간 설정
         tokenBlacklistRepository.save(tokenBlacklist);
+
+    }
+    public boolean isTokenBlacklisted(String token) {
+        return tokenBlacklistRepository.existsByToken(token);
     }
 }
