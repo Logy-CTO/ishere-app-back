@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable() // 폼 기반 로그인 비활성화
                 .httpBasic().disable() // HTTP 기본 인증 비활성화
                 .authorizeRequests(authorize -> authorize
-                        .antMatchers("/login", "/", "/join","/locationFind",
+                        .antMatchers("/login", "/", "/join","/locationFind","/verifyForLogin","/SendForLogin",
                                 "/smstest.html","/user/login","/sendSMS","/verifySMS","/user/register","/session","/loginuser"
                         ,"/refresh","/test").permitAll() // 특정 URL 패턴은 모두 허용
                         .antMatchers("/admin").hasRole("ADMIN") // /admin URL은 ADMIN 역할을 가진 사용자에게만 허용
