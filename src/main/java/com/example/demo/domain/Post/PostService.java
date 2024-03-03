@@ -7,6 +7,7 @@ import com.example.demo.domain.User.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
@@ -66,5 +67,25 @@ public class PostService {
         locationFindRepository.save(locationFind);
 
         return post;
+    }
+    public Post findById(int postId) throws Exception {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new Exception("해당 게시글을 찾을 수 없습니다. id=" + postId));
+    }
+    //게시글 수정
+    @Transactional
+    public void updatePost(int postId, String postTitle, String description, int reward, double xLoc, double yLoc, String areaName, byte immediateCase) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다. id=" + postId));
+
+        post.updatePost(postTitle, description, reward, xLoc, yLoc, areaName, immediateCase);
+    }
+    //게시글 삭제
+    @Transactional
+    public void deletePost(int postId) throws Exception {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new Exception("해당 게시글을 찾을 수 없습니다. id=" + postId));
+
+        postRepository.delete(post);
     }
 }

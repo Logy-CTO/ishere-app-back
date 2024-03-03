@@ -75,5 +75,16 @@ public class Post {
         this.yLoc = yLoc;
         this.userName = userName;
     }
+    public void updatePost(String postTitle, String description,
+                           int reward, double xLoc, double yLoc,
+                           String areaName, byte immediateCase) {
+        this.postTitle = postTitle;
+        this.description = description;
+        this.reward = reward;
+        this.xLoc = xLoc;
+        this.yLoc = yLoc;
+        this.areaName = areaName;
+        this.immediateCase = immediateCase;
+    }
 
 }
