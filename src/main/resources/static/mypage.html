@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>My Page</h1>
+<button id="loadPosts">Load My Posts</button>
+<div id="postList"></div>
+
+<script> // 마이페이지에서 내가 쓴글 확인 test HTML
+    $(document).ready(function() {
+        $("#loadPosts").click(function() {
+            $.get("board/mypage", function(data, status) {
+                $("#postList").empty();
+                data.forEach(function(post) {
+                    $("#postList").append("<p>" + JSON.stringify(post) + "</p>");
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -43,5 +43,5 @@ Others: [Flutter,JS,Naver Cloud,Ngnix]
 이 프로젝트는 MIT License 하에 라이센스가 부여됩니다.
 
 ### 📞 연락처
-hongtaiksu - @logy_cto - hong2hwa58@email.com
+hongtaiksu - @logy_cto - hong2hwa58@gmail.com
 kookhyeonwoo - @Kookutility

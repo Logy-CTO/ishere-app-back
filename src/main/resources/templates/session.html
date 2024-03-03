@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>이즈히어 세션정보</title>
+</head>
+<body>
+<h1>이즈히어 세션정보</h1>
+<p th:text="'로그인 한 유저: ' + ${userName}"></p>
+<p th:text="'로그인 한 유저Id: ' + ${userId}"></p>
+<p th:text="'마지막 활동 시간: ' + ${lastActivityTime}"></p>
+<p th:text="'세션 유지 시간(초): ' + ${maxInactiveInterval}"></p>
+</body>
+</html>

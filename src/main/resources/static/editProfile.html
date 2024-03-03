@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+</head>
+<body>
+<h1>Edit Profile</h1>
+<form action="/user/editProfile" method="post" enctype="application/x-www-form-urlencoded">
+    <label for="realName">Real Name:</label>
+    <input type="text" id="realName" name="realName"><br>
+
+    <label for="userName">User Name:</label>
+    <input type="text" id="userName" name="userName" required><br>
+
+    <label for="bankName">Bank Name:</label>
+    <select id="bankName" name="bankName">
+        <option value="농협">농협</option>
+        <option value="국민은행">국민은행</option>
+        <option value="신한은행">신한은행</option>
+        <option value="우리은행">우리은행</option>
+        <option value="기업은행">기업은행</option>
+        <option value="하나은행">하나은행</option>
+        <option value="대구은행">대구은행</option>
+        <option value="부산은행">부산은행</option>
+        <option value="우체국">우체국</option>
+        <option value="SC제일은행">SC제일은행</option>
+        <option value="광주은행">광주은행</option>
+        <option value="경남은행">경남은행</option>
+        <option value="수협">수협</option>
+        <option value="케이뱅크">케이뱅크</option>
+        <option value="카카오뱅크">카카오뱅크</option>
+    </select><br>
+
+    <label for="accountNumber">Account Number:</label>
+    <input type="text" id="accountNumber" name="accountNumber"><br>
+
+    <button type="submit">Save Changes</button>
+</form>
+</body>
+</html>

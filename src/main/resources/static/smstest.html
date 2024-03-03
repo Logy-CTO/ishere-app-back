@@ -47,14 +47,15 @@
                 });
             });
 
-            // 회원가입 완료 처리
             $("#register").click(function(){
                 var userName = $("#userName").val();
                 var phoneNumber = $("#phoneNumber").val();
                 $.ajax({
                     url: '/user/register',
                     type: 'POST',
-                    data: { userName: userName, phoneNumber: phoneNumber },
+                    contentType: 'application/json',
+                    dataType : 'json',
+                    data: JSON.stringify({ userName: userName, phoneNumber: phoneNumber }),
                     success: function(response){
                         alert('회원가입이 완료되었습니다. 닉네임: ' + response.userName);
                     },
@@ -108,9 +109,26 @@
                     type: 'POST',
                     data: { inputNum: inputNum },
                     success: function(response){
-                        if(response) {
+                        var username = $("#loginPhoneNumber").val();
+                        if (response) {
                             alert('로그인에 성공했습니다. 환영합니다!');
                             // 로그인 성공 후 필요한 작업 수행
+                            // 로그인이 성공하면 '/loginuser' 엔드포인트로 phoneNumber를 전송
+                            $.ajax({
+                                url: '/loginuser',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                dataType : 'json',
+                                data: JSON.stringify({ userName: userName }),
+                                success: function (response) {
+                                    // '/login'에 전화번호가 전송되었음을 알림
+                                    console.log('로그인(JWT) 성공, phoneNumber: ' + $("#loginPhoneNumber").val() + ' 가 전송되었습니다.');
+                                },
+                                error: function (error) {
+                                    console.log(error);
+                                    alert('문제(JWT)가 발생했습니다. 다시 시도해 주세요.');
+                                }
+                            });
                         } else {
                             alert('인증번호가 일치하지 않거나 시간이 초과되었습니다. 인증번호를 다시 요청해주세요.');
                         }
@@ -121,6 +139,7 @@
                     }
                 });
             });
+
         });
     </script>
 </head>
@@ -133,14 +152,13 @@
 <button id="submit">인증번호 받기</button>
 
 <!-- initially hidden -->
-<div id="verification" style="display: none;">
+<div id="verification" display="None">
     <label for="inputNum">인증번호:</label><br>
     <input type="text" id="inputNum" placeholder="Enter the verification number" required><br>
     <button id="verify">인증 확인</button>
 </div>
 
-<!-- initially hidden -->
-<button id="register" style="display: none;">회원가입 완료</button>
+<button id="register" display="None">회원가입 완료</button>
 
 <!-- 로그인 섹션 -->
 <h1>로그인</h1>
@@ -148,10 +166,22 @@
 <input type="text" id="loginPhoneNumber" placeholder="Enter your phone number" required><br>
 <button id="loginSubmit">회원조회 및 인증번호 요청</button><br>
 
-<div id="loginVerification" style="display:none;">
+<div id="loginVerification" >
     <label for="loginInputNum">인증번호:</label><br>
     <input type="text" id="loginInputNum" placeholder="Enter the verification number" required><br>
     <button id="loginVerify">로그인</button>
 </div>
+<button id="logout">로그아웃</button>
+
+<script>
+    $(document).ready(function(){
+        $("#logout").click(function(){
+            $.post("/user/logout");
+        });
+    });
+</script>
+
+</body>
+</html>
 </body>
 </html>

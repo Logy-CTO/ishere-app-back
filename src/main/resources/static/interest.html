@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Posts</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>User Posts</h1>
+<button id="loadPosts">Load My Posts</button>
+<table id="postsTable">
+    <tr>
+        <th>Post Title</th>
+        <th>Reward</th>
+        <th>Immediate Case</th>
+        <th>Created At</th>
+    </tr>
+</table>
+
+<script>
+    $(document).ready(function() {
+        $("#loadPosts").click(function() {
+            $.get("user/interest", function(posts) {
+                var postsTable = $('#postsTable');
+                posts.forEach(function(post) {
+                    var row = '<tr><td>' + post.postTitle + '</td><td>' + post.reward + '</td><td>' + post.immediateCase + '</td><td>' + post.createdAt + '</td></tr>';
+                    postsTable.append(row);
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>
