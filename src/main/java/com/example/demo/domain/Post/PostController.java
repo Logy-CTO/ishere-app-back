@@ -115,7 +115,42 @@ public class PostController {
         // 게시글 작성
         return ResponseEntity.ok(postService.writePost(postDTO));
     }
+    //게시글 수정
 
+    /*
+    ----------------------PutMapping------------------------
+    */
+
+    @PutMapping("/update")
+    public ResponseEntity updatePost(@RequestBody PostDTO postDTO) {
+        // SecurityContext에서 Authentication 객체를 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
+        }
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        String phoneNumber = customUserDetails.getUsername();
+        String userName = userService.findUserNameByPhoneNumber(phoneNumber);
+        String areaName = userService.findAreaNameByPhoneNumber(phoneNumber);
+        int postId = postDTO.getPostId();
+
+        try {
+            Post post = postService.findById(postId);
+            if (!post.getUserName().equals(userName)) {
+                throw new Exception("작성자만 게시글을 수정할 수 있습니다.");
+            }
+
+            // 게시글 정보 업데이트
+            postService.updatePost(postId, postDTO.getPostTitle(), postDTO.getDescription(), postDTO.getReward(),
+                    postDTO.getXLoc(), postDTO.getYLoc(), areaName, postDTO.getImmediateCase());
+
+            return ResponseEntity.ok().build();
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("게시글 수정에 실패하였습니다. : " + e.getMessage());
+        }
+    }
     /*
     ----------------------DeleteMapping------------------------
     */
