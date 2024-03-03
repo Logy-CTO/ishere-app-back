@@ -77,6 +77,9 @@ public class UserServiceImpl implements UserService {
     public User updateProfile(SignUpDto signUpDto) {
         User user = userRepository.findByPhoneNumber(signUpDto.getPhoneNumber());
 
+        if (userRepository.existsByUserName(signUpDto.getUserName())) {
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+        }
         user.updateUserName(signUpDto.getUserName());
         user.updateBankName(signUpDto.getBankName());
         user.updateRealName(signUpDto.getRealName());
