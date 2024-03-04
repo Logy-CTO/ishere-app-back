@@ -1,17 +1,26 @@
 package com.example.demo.domain.Post;
 
+import com.example.demo.domain.File.FtpService;
+import com.example.demo.domain.File.ImageRepository;
+import com.example.demo.domain.File.ImageUploadDTO;
+import com.example.demo.domain.File.Images;
 import com.example.demo.domain.Post.LocationFind.LocationFind;
 import com.example.demo.domain.Post.LocationFind.LocationFindRepository;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +30,9 @@ public class PostService {
     private final UserRepository userRepository;
     private final PostMapper postMapper;
     private final LocationFindRepository locationFindRepository;
+    private final ImageRepository imageRepository;
+    private final FtpService ftpService;
+
 
 
     public List<Post> getPosts() {
@@ -54,7 +66,8 @@ public class PostService {
         return postDTOs;
     }
     //글쓰기
-    public Post writePost(PostDTO postDto) {
+    @Transactional
+    public Post writePost(PostDTO postDto, ImageUploadDTO imageUploadDTO) {
         Post post = postDto.toWrite();
         post = postRepository.save(post);
 
@@ -66,8 +79,36 @@ public class PostService {
         locationFind.setImmediateCase(post.getImmediateCase());
         locationFindRepository.save(locationFind);
 
+
+        //이미지 업로드
+        if (imageUploadDTO.getFiles() != null && !imageUploadDTO.getFiles().isEmpty()) {
+            for (MultipartFile file : imageUploadDTO.getFiles()) {
+                UUID uuid = UUID.randomUUID();
+                String imageFileName = uuid + "_" + file.getOriginalFilename();
+
+                File destinationFile = new File("/home/www/html/images/" + imageFileName);
+                ftpService.uploadFile(destinationFile.toString(), "/home/www/html/images/" + imageFileName);
+
+                try {
+                    file.transferTo(destinationFile);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                Images image = Images.builder()
+                        .img_url("http://113.131.111.147/images/" + imageFileName)
+                        .image_name(imageFileName)
+                        .post(post)
+                        .build();
+
+                imageRepository.save(image);
+            }
+        }
+
+
         return post;
     }
+
     public Post findById(int postId) throws Exception {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new Exception("해당 게시글을 찾을 수 없습니다. id=" + postId));

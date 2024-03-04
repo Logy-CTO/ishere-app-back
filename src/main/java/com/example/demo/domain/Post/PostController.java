@@ -1,5 +1,6 @@
 package com.example.demo.domain.Post;
 
+import com.example.demo.domain.File.ImageUploadDTO;
 import com.example.demo.domain.User.*;
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -92,7 +93,8 @@ public class PostController {
 
     //글쓰기
     @PostMapping("/upload")
-    public ResponseEntity writePost(@RequestBody PostDTO postDTO) {
+    public ResponseEntity writePost(@RequestBody PostDTO postDTO,
+                                    @RequestBody ImageUploadDTO imageUploadDTO) {
         // SecurityContext에서 Authentication 객체를 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -113,7 +115,7 @@ public class PostController {
         postDTO.setAreaName(areaName);
 
         // 게시글 작성
-        return ResponseEntity.ok(postService.writePost(postDTO));
+        return ResponseEntity.ok(postService.writePost(postDTO, imageUploadDTO));
     }
     //게시글 수정
 
