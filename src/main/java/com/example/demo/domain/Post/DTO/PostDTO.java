@@ -1,8 +1,9 @@
-package com.example.demo.domain.Post;
+package com.example.demo.domain.Post.DTO;
 
 import java.time.LocalDateTime;
 
 
+import com.example.demo.domain.Post.Post;
 import lombok.Data;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,6 @@ import java.util.stream.Collectors;
 
 
 import com.example.demo.domain.File.Images;
-import retrofit2.http.POST;
 
 @Data
 @Builder

@@ -1,6 +1,8 @@
 package com.example.demo.domain.Post;
 
 import com.example.demo.domain.File.ImageUploadDTO;
+import com.example.demo.domain.Post.DTO.PostDTO;
+import com.example.demo.domain.Post.DTO.PostPopUpDto;
 import com.example.demo.domain.User.*;
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -85,6 +87,12 @@ public class PostController {
     @GetMapping("/count")
     public long getPostCount() {
         return postRepository.count();
+    }
+    //한눈에보기 마커 클릭 시 팝업창
+    @GetMapping("/popUp")
+    public ResponseEntity<PostPopUpDto> getPostPopUp(@RequestBody PostPopUpDto postPopUpDto) {
+        int postId = postPopUpDto.getPostId();
+        return ResponseEntity.ok(postService.getPostPopUp(postId));
     }
 
     /*

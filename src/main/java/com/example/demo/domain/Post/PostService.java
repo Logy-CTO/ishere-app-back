@@ -4,6 +4,8 @@ import com.example.demo.domain.File.FtpService;
 import com.example.demo.domain.File.ImageRepository;
 import com.example.demo.domain.File.ImageUploadDTO;
 import com.example.demo.domain.File.Images;
+import com.example.demo.domain.Post.DTO.PostDTO;
+import com.example.demo.domain.Post.DTO.PostPopUpDto;
 import com.example.demo.domain.Post.LocationFind.LocationFind;
 import com.example.demo.domain.Post.LocationFind.LocationFindRepository;
 import com.example.demo.domain.User.User;
@@ -128,5 +130,18 @@ public class PostService {
                 .orElseThrow(() -> new Exception("해당 게시글을 찾을 수 없습니다. id=" + postId));
 
         postRepository.delete(post);
+    }
+    public PostPopUpDto getPostPopUp(int postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + postId));
+
+        return new PostPopUpDto(
+                post.getPostId(),
+                post.getCategoryType(),
+                post.getPostTitle(),
+                post.getImmediateCase(),
+                post.getReward(),
+                post.getUserName()
+        );
     }
 }

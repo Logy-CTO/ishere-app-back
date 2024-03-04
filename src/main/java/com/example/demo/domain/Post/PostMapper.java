@@ -1,8 +1,8 @@
 package com.example.demo.domain.Post;
 
 
+import com.example.demo.domain.Post.DTO.PostDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface PostMapper {
