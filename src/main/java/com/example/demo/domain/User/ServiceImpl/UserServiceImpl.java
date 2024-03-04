@@ -96,6 +96,14 @@ public class UserServiceImpl implements UserService {
         user.addInterestPost(interestPostDto.getInterestPost());
         userRepository.save(user);
     }
+    //사용자의 지역 변경(게시판 변경)
+    public void updateArea(String phoneNumber, UserAreaDto userAreaDto){
+        User user = userRepository.findByPhoneNumber(phoneNumber);
+
+        user.updateArea(userAreaDto.getAreaName());
+        userRepository.save(user);
+
+    }
 
 
 }

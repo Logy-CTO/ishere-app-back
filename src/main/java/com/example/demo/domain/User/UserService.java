@@ -21,6 +21,7 @@ public interface UserService {
     //마이페이지 수정
     User updateProfile(SignUpDto signUpDto);
     void addInterestPost(String phoneNumber, InterestPostDto interestPostDto);
+    void updateArea(String phoneNumber, UserAreaDto userAreaDto);
 
 }
 

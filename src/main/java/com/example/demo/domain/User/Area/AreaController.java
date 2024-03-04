@@ -1,4 +1,4 @@
-package com.example.demo.domain.Area;
+package com.example.demo.domain.User.Area;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.beans.factory.annotation.Autowired;
