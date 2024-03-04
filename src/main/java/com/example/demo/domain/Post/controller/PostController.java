@@ -58,7 +58,6 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostsByUserName(userName));
     }
 
-    /*
     //사용자의 관심있는 게시글보기
     @GetMapping("/interestPost")
     public ResponseEntity<List<PostDTO>> getPostsByUserInterestPost(){
@@ -72,18 +71,14 @@ public class PostController {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         String phoneNumber = customUserDetails.getUsername();
 
-        // 사용자의 관심 post ID 리스트를 ","스플릿해서(서비스) 가져오기
-        List<String> interestPosts = postService.getUserInterestPosts(phoneNumber);
+        List<Integer> interestPosts = postService.getUserInterestPosts(phoneNumber);
 
         // post ID 리스트에 해당하는 post들을 한 번의 쿼리로 가져오기
-        List<Integer> postIds = interestPosts.stream()
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
-        List<PostDTO> posts = postService.getPost(postIds);
+        List<PostDTO> posts = postService.getPost(interestPosts);
 
         return ResponseEntity.ok(posts);
     }
-    */
+
 
     //게시글 정렬
     @GetMapping("/list")

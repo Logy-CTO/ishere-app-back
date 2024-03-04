@@ -13,17 +13,15 @@ import com.example.demo.domain.Post.dto.PostMapper;
 import com.example.demo.domain.Post.repository.InterestPostRepository;
 import com.example.demo.domain.Post.repository.PostRepository;
 import com.example.demo.domain.User.InterestPostDto;
-import com.example.demo.domain.User.User;
+import com.example.demo.domain.User.ServiceImpl.UserServiceImpl;
 import com.example.demo.domain.User.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -41,7 +39,7 @@ public class PostService {
     private final ImageRepository imageRepository;
     private final FtpService ftpService;
     private final InterestPostRepository interestPostRepository;
-
+    private final UserServiceImpl userService;
     public List<Post> getPosts() {
         return postRepository.findAll();
     }
@@ -57,8 +55,7 @@ public class PostService {
     // 사용자가 관심있는 게시글 추가(좋아요 누르기)
     public void addInterestPost(String phoneNumber, InterestPostDto interestPostDto) {
         // 전화번호로 사용자를 확인하고, 사용자 이름을 가져오는 로직이 필요할 것입니다.
-        // 여기서는 가정적으로 사용자 이름을 "phoneNumber"로 설정합니다.
-        String userName = phoneNumber;
+        String userName = userService.findUserNameByPhoneNumber(phoneNumber);
 
         // InterestPostDto에서 데이터를 가져와서 InterestPost 엔티티를 생성합니다.
         InterestPost interestPost = new InterestPost();
@@ -69,13 +66,13 @@ public class PostService {
         interestPostRepository.save(interestPost);
     }
 
-    /*
-    //","스플릿해서 user의 관심게시글 가져오기
-    public List<String> getUserInterestPosts(String phoneNumber) {
-        User user = userRepository.findByPhoneNumber(phoneNumber);
-        return Arrays.asList(user.getInterestPost().split(","));
+    public List<Integer> getUserInterestPosts(String phoneNumber) {
+        String userName = userService.findUserNameByPhoneNumber(phoneNumber);
+        List<InterestPost> interestPosts = interestPostRepository.findByUserName(userName);
+        return interestPosts.stream()
+                .map(InterestPost::getPostId)
+                .collect(Collectors.toList());
     }
-     */
 
     //마이페이지 본인이 작성한 게시글 조회
     public List<PostDTO> getPostsByUserName(String userName) {
