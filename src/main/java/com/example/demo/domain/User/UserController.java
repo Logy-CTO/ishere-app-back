@@ -89,5 +89,23 @@ public class UserController {
         userService.addInterestPost(customUserDetails.getUsername(), interestPostDto);
         return ResponseEntity.ok().build();
     }
+/*
+    ----------------------PutMapping------------------------
+*/
+    //게시판 변경
+    @PutMapping("/updateArea")
+    public ResponseEntity<Void> updateArea(@RequestBody UserAreaDto userAreaDto){
+        // SecurityContext에서 Authentication 객체를 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
+        }
+
+        // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        //Username은 phoneNumber로 들어감
+        userService.updateArea(customUserDetails.getUsername(),userAreaDto);
+        return ResponseEntity.ok().build();
+    }
 }

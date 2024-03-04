@@ -117,4 +117,12 @@ public class User {
             this.interestPost += newPostId;
         }
     }
+    public User(String phoneNumber, String areaName) {
+        this.phoneNumber = phoneNumber;
+        this.areaName = areaName;
+    }
+
+    public void updateArea(String areaName) {
+        this.areaName = areaName;
+    }
 }

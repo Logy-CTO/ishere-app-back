@@ -1,4 +1,4 @@
-package com.example.demo.domain.Area;
+package com.example.demo.domain.User.Area;
 
 import java.util.List;
 
