@@ -8,5 +8,4 @@ public interface PostRepository extends JpaRepository<Post, Integer> { //첫 번
     List<Post> findByPostIdIn(List<Integer> postIds);
     List<Post> findByUserName(String userName);
 
-
 }
