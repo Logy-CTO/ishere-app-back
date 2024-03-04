@@ -1,10 +1,10 @@
-package com.example.demo.domain.Area.ServiceImpl;
+package com.example.demo.domain.User.Area.ServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.example.demo.domain.Area.AreaService;
-import com.example.demo.domain.Area.AreaRepository;
-import com.example.demo.domain.Area.Area;
+import com.example.demo.domain.User.Area.AreaService;
+import com.example.demo.domain.User.Area.AreaRepository;
+import com.example.demo.domain.User.Area.Area;
 import java.util.List;
 
 @RequiredArgsConstructor//final 생성자 생성

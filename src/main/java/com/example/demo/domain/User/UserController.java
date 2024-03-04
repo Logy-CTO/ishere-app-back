@@ -1,22 +1,13 @@
 package com.example.demo.domain.User;
 
-import com.example.demo.domain.Post.Post;
-import com.example.demo.domain.Post.PostDTO;
-import com.example.demo.domain.Post.PostRepository;
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -74,9 +65,13 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    //게시글 관심목록추가(좋아요 누르기)
-    @PostMapping("/addInterestPost")
-    public ResponseEntity<Void> addInterestPost(@RequestBody InterestPostDto interestPostDto) {
+/*
+    ----------------------PutMapping------------------------
+*/
+    //게시판 변경
+    @PutMapping("/updateArea")
+    public ResponseEntity<Void> updateArea(@RequestBody UserAreaDto userAreaDto){
+        // SecurityContext에서 Authentication 객체를 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -85,9 +80,8 @@ public class UserController {
 
         // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        //customUserDetails.getUsername() -> PhoneNumber임
-        userService.addInterestPost(customUserDetails.getUsername(), interestPostDto);
+        //Username은 phoneNumber로 들어감
+        userService.updateArea(customUserDetails.getUsername(),userAreaDto);
         return ResponseEntity.ok().build();
     }
-
 }

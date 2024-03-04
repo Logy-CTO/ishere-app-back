@@ -1,5 +1,6 @@
-package com.example.demo.domain.Post;
+package com.example.demo.domain.Post.entity;
 
+import com.example.demo.domain.File.Images;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,10 +8,11 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Getter
 @Table(name = "post")
+@Getter
 @NoArgsConstructor
 public class Post {
     @Id
@@ -48,6 +50,10 @@ public class Post {
     @Column(name = "USER_NAME")
     private String userName;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OrderBy("id asc")
+    private List<Images> postImages;
+
     @Builder
     public Post(int postId,
                 String categoryType,
@@ -60,7 +66,9 @@ public class Post {
                 String areaName,
                 double xLoc,
                 double yLoc,
-                String userName)
+                String userName,
+                List<Images> postImages
+    )
     {
         this.postId = postId;
         this.categoryType = categoryType;
@@ -74,6 +82,7 @@ public class Post {
         this.xLoc = xLoc;
         this.yLoc = yLoc;
         this.userName = userName;
+        this.postImages = postImages;
     }
     public void updatePost(String postTitle, String description,
                            int reward, double xLoc, double yLoc,
@@ -86,5 +95,6 @@ public class Post {
         this.areaName = areaName;
         this.immediateCase = immediateCase;
     }
+
 
 }

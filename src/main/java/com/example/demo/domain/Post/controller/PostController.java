@@ -1,5 +1,11 @@
-package com.example.demo.domain.Post;
+package com.example.demo.domain.Post.controller;
 
+import com.example.demo.domain.File.ImageUploadDTO;
+import com.example.demo.domain.Post.entity.Post;
+import com.example.demo.domain.Post.dto.PostDTO;
+import com.example.demo.domain.Post.repository.InterestPostRepository;
+import com.example.demo.domain.Post.repository.PostRepository;
+import com.example.demo.domain.Post.service.PostService;
 import com.example.demo.domain.User.*;
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +29,7 @@ public class PostController {
     private final PostRepository postRepository;
     private final PostService postService;
     private final UserService userService;
+
     /*
     ----------------------GetMapping------------------------
     */
@@ -51,6 +58,7 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostsByUserName(userName));
     }
 
+    /*
     //사용자의 관심있는 게시글보기
     @GetMapping("/interestPost")
     public ResponseEntity<List<PostDTO>> getPostsByUserInterestPost(){
@@ -75,6 +83,8 @@ public class PostController {
 
         return ResponseEntity.ok(posts);
     }
+    */
+
     //게시글 정렬
     @GetMapping("/list")
     public List<Post> getPostList() {
@@ -92,7 +102,8 @@ public class PostController {
 
     //글쓰기
     @PostMapping("/upload")
-    public ResponseEntity writePost(@RequestBody PostDTO postDTO) {
+    public ResponseEntity writePost(@RequestBody PostDTO postDTO,
+                                    @RequestBody ImageUploadDTO imageUploadDTO) {
         // SecurityContext에서 Authentication 객체를 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -113,9 +124,25 @@ public class PostController {
         postDTO.setAreaName(areaName);
 
         // 게시글 작성
-        return ResponseEntity.ok(postService.writePost(postDTO));
+        return ResponseEntity.ok(postService.writePost(postDTO, imageUploadDTO));
     }
     //게시글 수정
+
+    //게시글 관심목록추가(좋아요 누르기)
+    @PostMapping("/addInterestPost")
+    public ResponseEntity addInterestPost(@RequestBody InterestPostDto interestPostDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
+        }
+
+        // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        //customUserDetails.getUsername() -> PhoneNumber임
+        postService.addInterestPost(customUserDetails.getUsername(), interestPostDto);
+        return ResponseEntity.ok().build();
+    }
 
     /*
     ----------------------PutMapping------------------------
@@ -180,5 +207,4 @@ public class PostController {
             return ResponseEntity.badRequest().body("게시글 삭제에 실패하였습니다. : " + e.getMessage());
         }
     }
-
-}
+    }
