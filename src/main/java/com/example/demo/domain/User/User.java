@@ -1,14 +1,11 @@
 package com.example.demo.domain.User;
 
-import com.example.demo.domain.Post.Post;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
-import javax.persistence.OneToMany;
+
 @Entity
 @Getter
 @Table(name = "user")
@@ -34,9 +31,6 @@ public class User {
     @Column(name = "BANK_NAME")
     private String bankName;
 
-    @Column(name = "INTEREST_POST")
-    private String interestPost;
-
     @Column(name = "REAL_NAME")
     private String realName;
 
@@ -54,7 +48,6 @@ public class User {
                 String accountNumber,
                 String areaName,
                 String bankName,
-                String interestPost,
                 String phoneNumber,
                 String realName,
                 String userName,
@@ -65,7 +58,6 @@ public class User {
         this.id = id;
         this.accountNumber = accountNumber;
         this.bankName = bankName;
-        this.interestPost = interestPost;
         this.phoneNumber = phoneNumber;
         this.realName = realName;
         this.userName = userName;
@@ -107,16 +99,8 @@ public class User {
         this.bankName = bankName;
         this.accountNumber = accountNumber;
         this.areaName = areaName;
-        this.interestPost = interestPost;
     }
-    //관심목록 추가 dto
-    public void addInterestPost(String newPostId) {
-        if (this.interestPost == null) {
-            this.interestPost = newPostId;
-        } else {
-            this.interestPost += newPostId;
-        }
-    }
+
     public User(String phoneNumber, String areaName) {
         this.phoneNumber = phoneNumber;
         this.areaName = areaName;

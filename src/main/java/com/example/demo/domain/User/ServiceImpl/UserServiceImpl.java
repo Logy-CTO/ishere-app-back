@@ -1,23 +1,11 @@
 package com.example.demo.domain.User.ServiceImpl;
-import com.example.demo.domain.Post.Post;
-import com.example.demo.domain.Post.PostDTO;
-import com.example.demo.domain.Post.PostMapper;
-import com.example.demo.domain.Post.PostRepository;
+import com.example.demo.domain.Post.repository.PostRepository;
 import com.example.demo.domain.User.*;
-import com.google.type.PhoneNumber;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 @RequiredArgsConstructor
@@ -88,14 +76,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    //사용자가 관심있는 게시글 추가(좋아요 누르기)
-    public void addInterestPost(String phoneNumber, InterestPostDto interestPostDto) {
-        User user = userRepository.findByPhoneNumber(phoneNumber);
-        
-        interestPostDto.addInterestPost();
-        user.addInterestPost(interestPostDto.getInterestPost());
-        userRepository.save(user);
-    }
     //사용자의 지역 변경(게시판 변경)
     public void updateArea(String phoneNumber, UserAreaDto userAreaDto){
         User user = userRepository.findByPhoneNumber(phoneNumber);

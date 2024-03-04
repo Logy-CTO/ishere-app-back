@@ -1,6 +1,6 @@
 package com.example.demo.domain.File;
 
-import com.example.demo.domain.Post.Post;
+import com.example.demo.domain.Post.entity.Post;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 

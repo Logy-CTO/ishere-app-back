@@ -1,4 +1,4 @@
-package com.example.demo.domain.Post;
+package com.example.demo.domain.Post.service;
 
 import com.example.demo.domain.File.FtpService;
 import com.example.demo.domain.File.ImageRepository;
@@ -6,9 +6,17 @@ import com.example.demo.domain.File.ImageUploadDTO;
 import com.example.demo.domain.File.Images;
 import com.example.demo.domain.Post.LocationFind.LocationFind;
 import com.example.demo.domain.Post.LocationFind.LocationFindRepository;
+import com.example.demo.domain.Post.entity.InterestPost;
+import com.example.demo.domain.Post.entity.Post;
+import com.example.demo.domain.Post.dto.PostDTO;
+import com.example.demo.domain.Post.dto.PostMapper;
+import com.example.demo.domain.Post.repository.InterestPostRepository;
+import com.example.demo.domain.Post.repository.PostRepository;
+import com.example.demo.domain.User.InterestPostDto;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,8 +40,7 @@ public class PostService {
     private final LocationFindRepository locationFindRepository;
     private final ImageRepository imageRepository;
     private final FtpService ftpService;
-
-
+    private final InterestPostRepository interestPostRepository;
 
     public List<Post> getPosts() {
         return postRepository.findAll();
@@ -47,11 +54,28 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    // 사용자가 관심있는 게시글 추가(좋아요 누르기)
+    public void addInterestPost(String phoneNumber, InterestPostDto interestPostDto) {
+        // 전화번호로 사용자를 확인하고, 사용자 이름을 가져오는 로직이 필요할 것입니다.
+        // 여기서는 가정적으로 사용자 이름을 "phoneNumber"로 설정합니다.
+        String userName = phoneNumber;
+
+        // InterestPostDto에서 데이터를 가져와서 InterestPost 엔티티를 생성합니다.
+        InterestPost interestPost = new InterestPost();
+        interestPost.setUserName(userName);
+        interestPost.setPostId(Math.toIntExact(interestPostDto.getPostId()));
+
+        // 생성된 InterestPost를 저장합니다.
+        interestPostRepository.save(interestPost);
+    }
+
+    /*
     //","스플릿해서 user의 관심게시글 가져오기
     public List<String> getUserInterestPosts(String phoneNumber) {
         User user = userRepository.findByPhoneNumber(phoneNumber);
         return Arrays.asList(user.getInterestPost().split(","));
     }
+     */
 
     //마이페이지 본인이 작성한 게시글 조회
     public List<PostDTO> getPostsByUserName(String userName) {

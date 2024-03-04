@@ -1,12 +1,8 @@
 package com.example.demo.domain.User;
 
 
-import com.example.demo.domain.Post.PostDTO;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 public interface UserService {
     //회원가입
@@ -20,7 +16,6 @@ public interface UserService {
     boolean checkPinNumber(String phoneNumber, String pinNumber);
     //마이페이지 수정
     User updateProfile(SignUpDto signUpDto);
-    void addInterestPost(String phoneNumber, InterestPostDto interestPostDto);
     void updateArea(String phoneNumber, UserAreaDto userAreaDto);
 
 }
