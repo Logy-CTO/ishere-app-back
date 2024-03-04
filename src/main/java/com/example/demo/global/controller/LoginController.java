@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,9 +36,28 @@ import java.util.Random;
 @RestController
 @RequiredArgsConstructor
 public class LoginController {
+    // 로그인 요청 처리 메서드
     private final JwtTokenProvider jwtTokenProvider;
     private final JWTUserRepository jwtUserRepository;
     private final JwtService jwtService;
+
+    @PostMapping(value = "/loginuser", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Token> login(@RequestBody Map<String, String> user) {
+        log.info("PhoneNumber = {}", user.get("username"));
+        UserEntity member = jwtUserRepository.findByUsername(user.get("username"));
+
+        Token tokenDto = jwtTokenProvider.createAccessToken(member.getUsername(), member.getRole());
+        log.info("getrole = {}", member.getRole());
+        jwtService.login(tokenDto);
+
+        // 토큰을 헤더에 추가하여 응답
+        return ResponseEntity.ok()
+                .header("Authorization", "Bearer " + tokenDto.getAccessToken())
+                .body(tokenDto);
+    }
+}
+    //아래 메서드들은 실제 서비스 수행 시 사용(문자api사용료 비싸욤ㅜ)
+    /*
     private DefaultMessageService messageService;
 
     @org.springframework.beans.factory.annotation.Value("${cool-sms.api-key}")
@@ -166,4 +186,6 @@ public class LoginController {
         }
         return numStr.toString();
     }
+
 }
+*/

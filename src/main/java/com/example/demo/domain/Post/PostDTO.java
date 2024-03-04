@@ -8,6 +8,13 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+
+import com.example.demo.domain.File.Images;
+import retrofit2.http.POST;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,6 +33,7 @@ public class PostDTO {
     private double xLoc;
     private double yLoc;
     private String userName;
+    private List<String> imageUrls;
 
     //글쓰기
     public Post toWrite() {
@@ -43,6 +51,10 @@ public class PostDTO {
                 .yLoc(this.yLoc)
                 .userName(this.userName)
                 .build();
+    }
+
+    public PostDTO(Post post){
+        this.imageUrls = post.getPostImages().stream().map(Images::getImg_url).collect(Collectors.toList());
     }
 
     public static PostDTO fromEntity(Post post) {
