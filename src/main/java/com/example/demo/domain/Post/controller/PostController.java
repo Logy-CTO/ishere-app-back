@@ -1,9 +1,11 @@
 package com.example.demo.domain.Post.controller;
 
 import com.example.demo.domain.File.ImageUploadDTO;
+import com.example.demo.domain.Post.entity.Notice;
 import com.example.demo.domain.Post.entity.Post;
 import com.example.demo.domain.Post.dto.PostDTO;
 import com.example.demo.domain.Post.repository.InterestPostRepository;
+import com.example.demo.domain.Post.repository.NoticeRepository;
 import com.example.demo.domain.Post.repository.PostRepository;
 import com.example.demo.domain.Post.service.PostService;
 import com.example.demo.domain.User.*;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostRepository postRepository;
+    private final NoticeRepository noticeRepository;
     private final PostService postService;
     private final UserService userService;
 
@@ -79,6 +82,10 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
+    @GetMapping("/notice")
+    public List<Notice> getAllNotices() {
+        return noticeRepository.findAll();
+    }
 
     //게시글 정렬
     @GetMapping("/list")
