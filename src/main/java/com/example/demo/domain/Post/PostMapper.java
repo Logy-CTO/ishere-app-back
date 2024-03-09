@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface PostMapper {
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
@@ -18,4 +20,6 @@ public interface PostMapper {
     @Mapping(source = "reward", target = "reward")
     @Mapping(source = "userName", target = "userName")
     PostPopUpDto postToPostPopUpDto(Post post);
+
+    List<PostDTO> postsToPostDTOs(List<Post> posts);
 }

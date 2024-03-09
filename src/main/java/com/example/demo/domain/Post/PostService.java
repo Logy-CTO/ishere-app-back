@@ -47,9 +47,7 @@ public class PostService {
     //postid로 여러 게시글 불러오기 메서드
     public List<PostDTO> getPost(List<Integer> postIds) {
         List<Post> posts = postRepository.findByPostIdIn(postIds);
-        return posts.stream()
-                .map(PostDTO::fromEntity)
-                .collect(Collectors.toList());
+        return postMapper.postsToPostDTOs(posts);
     }
 
     //","스플릿해서 user의 관심게시글 가져오기
@@ -71,7 +69,6 @@ public class PostService {
 
         return postDTOs;
     }
-    //글쓰기
     //글쓰기
     @Transactional
     public Post writePost(PostDTO postDto, ImageUploadDTO imageUploadDTO) {
