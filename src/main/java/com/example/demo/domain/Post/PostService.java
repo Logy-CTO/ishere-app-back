@@ -128,7 +128,7 @@ public class PostService {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new Exception("해당 게시글을 찾을 수 없습니다. id=" + postId));
     }
-    //게시글 수정
+    //게시글 수정(올바른 수정내역을 위하여 엔티티 반환)
     @Transactional
     public Post updatePost(int postId, PostUpdateDTO postUpdateDTO) {
         Post post = postRepository.findById(postId)
@@ -139,13 +139,15 @@ public class PostService {
         return updatedPost;
     }
     //게시글 삭제
+    //delete는 반환값이 없으므로 void를 사용.
     @Transactional
-    public Post deletePost(int postId) throws Exception {
+    public void deletePost(int postId) throws Exception {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new Exception("해당 게시글을 찾을 수 없습니다. id=" + postId));
 
         postRepository.delete(post);
     }
+    //post의 DTO를 반환(필요한 정보만)
     public PostPopUpDto getPostPopUp(int postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + postId));

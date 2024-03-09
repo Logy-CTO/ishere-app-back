@@ -150,7 +150,6 @@ public class PostController {
             if (!post.getUserName().equals(userName)) {
                 throw new Exception("작성자만 게시글을 수정할 수 있습니다.");
             }
-
             // 게시글 정보 업데이트
             postService.updatePost(postId, postUpdateDTO);
 

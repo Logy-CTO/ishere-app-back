@@ -86,13 +86,13 @@ public class Post {
         this.postImages = postImages;
     }
     public void updatePostFromDto(PostUpdateDTO postUpdateDTO) {
-        this.postTitle = postTitle;
-        this.description = description;
-        this.reward = reward;
-        this.xLoc = xLoc;
-        this.yLoc = yLoc;
-        this.areaName = areaName;
-        this.immediateCase = immediateCase;
+        this.postTitle = postUpdateDTO.getPostTitle(); // DTO에서 값을 가져와 현재 객체의 필드를 업데이트
+        this.description = postUpdateDTO.getDescription();
+        this.reward = postUpdateDTO.getReward();
+        this.xLoc = postUpdateDTO.getXLoc();
+        this.yLoc = postUpdateDTO.getYLoc();
+        this.areaName = postUpdateDTO.getAreaName();
+        this.immediateCase = postUpdateDTO.getImmediateCase(); // boolean 타입의 경우 getter 메서드 명명 규칙이 다를 수 있음
     }
 
 
