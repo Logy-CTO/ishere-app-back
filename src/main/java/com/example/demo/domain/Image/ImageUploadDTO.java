@@ -1,4 +1,4 @@
-package com.example.demo.domain.File;
+package com.example.demo.domain.Image;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;

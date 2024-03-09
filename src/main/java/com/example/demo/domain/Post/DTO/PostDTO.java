@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-import com.example.demo.domain.File.Images;
+import com.example.demo.domain.Image.PostImage;
 
 @Data
 @Builder
@@ -54,7 +54,7 @@ public class PostDTO {
     }
 
     public PostDTO(Post post){
-        this.imageUrls = post.getPostImages().stream().map(Images::getImg_url).collect(Collectors.toList());
+        this.imageUrls = post.getPostImages().stream().map(PostImage::getImg_url).collect(Collectors.toList());
     }
 
     public static PostDTO fromEntity(Post post) {

@@ -1,33 +1,36 @@
 package com.example.demo.domain.Post;
 
-import com.example.demo.domain.File.FtpService;
-import com.example.demo.domain.File.ImageRepository;
-import com.example.demo.domain.File.ImageUploadDTO;
-import com.example.demo.domain.File.Images;
+import com.example.demo.domain.Image.FtpService;
+import com.example.demo.domain.Image.ImageRepository;
+import com.example.demo.domain.Image.ImageUploadDTO;
 import com.example.demo.domain.Post.DTO.PostDTO;
 import com.example.demo.domain.Post.DTO.PostPopUpDto;
+import com.example.demo.domain.Image.PostImage;
+import com.example.demo.domain.Post.DTO.PostUpdateDTO;
 import com.example.demo.domain.Post.LocationFind.LocationFind;
 import com.example.demo.domain.Post.LocationFind.LocationFindRepository;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.stream.Collectors;
-
+import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
+    private static final String UPLOAD_DIR = "uploads/";
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PostMapper postMapper;
@@ -51,7 +54,8 @@ public class PostService {
 
     //","스플릿해서 user의 관심게시글 가져오기
     public List<String> getUserInterestPosts(String phoneNumber) {
-        User user = userRepository.findByPhoneNumber(phoneNumber);
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         return Arrays.asList(user.getInterestPost().split(","));
     }
 
@@ -68,6 +72,7 @@ public class PostService {
         return postDTOs;
     }
     //글쓰기
+    //글쓰기
     @Transactional
     public Post writePost(PostDTO postDto, ImageUploadDTO imageUploadDTO) {
         Post post = postDto.toWrite();
@@ -83,31 +88,39 @@ public class PostService {
 
 
         //이미지 업로드
-        if (imageUploadDTO.getFiles() != null && !imageUploadDTO.getFiles().isEmpty()) {
+        if(imageUploadDTO.getFiles() != null && !imageUploadDTO.getFiles().isEmpty()) {
             for (MultipartFile file : imageUploadDTO.getFiles()) {
-                UUID uuid = UUID.randomUUID();
-                String imageFileName = uuid + "_" + file.getOriginalFilename();
-
-                File destinationFile = new File("/home/www/html/images/" + imageFileName);
-                ftpService.uploadFile(destinationFile.toString(), "/home/www/html/images/" + imageFileName);
-
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                String uniqueFileName = System.currentTimeMillis() + "-" + fileName;
                 try {
-                    file.transferTo(destinationFile);
+                    // 파일을 업로드할 디렉토리 경로 설정
+                    Path uploadPath = Path.of(UPLOAD_DIR);
+
+                    // 디렉토리가 없으면 생성
+                    if (!Files.exists(uploadPath)) {
+                        Files.createDirectories(uploadPath);
+                    }
+
+                    // 파일을 지정한 디렉토리로 복사
+                    Path filePath = uploadPath.resolve(uniqueFileName);
+                    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                    // FTP 서버에 파일 업로드 ** 중요 "/home/www/html/images/" 우리 이미지 경로
+                    ftpService.uploadFile(filePath.toString(), "/home/www/html/images/" + uniqueFileName);
+
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
 
-                Images image = Images.builder()
-                        .img_url("http://113.131.111.147/images/" + imageFileName)
-                        .image_name(imageFileName)
-                        .post(post)
+                PostImage image = PostImage.builder()
+                        .image_name(uniqueFileName)
+                        .img_url(ftpService.setUrl() + uniqueFileName)  //민감정보 숨기기
+                        .post(postDto.toWrite())
                         .build();
 
                 imageRepository.save(image);
             }
         }
-
-
         return post;
     }
 
@@ -117,15 +130,17 @@ public class PostService {
     }
     //게시글 수정
     @Transactional
-    public void updatePost(int postId, String postTitle, String description, int reward, double xLoc, double yLoc, String areaName, byte immediateCase) {
+    public Post updatePost(int postId, PostUpdateDTO postUpdateDTO) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다. id=" + postId));
 
-        post.updatePost(postTitle, description, reward, xLoc, yLoc, areaName, immediateCase);
+        post.updatePostFromDto(postUpdateDTO);
+        Post updatedPost = postRepository.save(post);
+        return updatedPost;
     }
     //게시글 삭제
     @Transactional
-    public void deletePost(int postId) throws Exception {
+    public Post deletePost(int postId) throws Exception {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new Exception("해당 게시글을 찾을 수 없습니다. id=" + postId));
 
@@ -135,13 +150,7 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + postId));
 
-        return new PostPopUpDto(
-                post.getPostId(),
-                post.getCategoryType(),
-                post.getPostTitle(),
-                post.getImmediateCase(),
-                post.getReward(),
-                post.getUserName()
-        );
+        // 주입받은 매퍼를 사용하여 변환
+        return postMapper.postToPostPopUpDto(post);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.domain.Post;
 
-import com.example.demo.domain.File.Images;
+import com.example.demo.domain.Image.PostImage;
+import com.example.demo.domain.Post.DTO.PostUpdateDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,7 +53,7 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @OrderBy("id asc")
-    private List<Images> postImages;
+    private List<PostImage> postImages;
 
     @Builder
     public Post(int postId,
@@ -67,7 +68,7 @@ public class Post {
                 double xLoc,
                 double yLoc,
                 String userName,
-                List<Images> postImages
+                List<PostImage> postImages
     )
     {
         this.postId = postId;
@@ -84,9 +85,7 @@ public class Post {
         this.userName = userName;
         this.postImages = postImages;
     }
-    public void updatePost(String postTitle, String description,
-                           int reward, double xLoc, double yLoc,
-                           String areaName, byte immediateCase) {
+    public void updatePostFromDto(PostUpdateDTO postUpdateDTO) {
         this.postTitle = postTitle;
         this.description = description;
         this.reward = reward;

@@ -1,4 +1,4 @@
-package com.example.demo.domain.File;
+package com.example.demo.domain.Image;
 
 import com.example.demo.domain.Post.Post;
 import lombok.*;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Images {
+public class PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
@@ -33,9 +33,9 @@ public class Images {
     private Post post;
 
     @Builder
-    public Images(String image_name,
-                  String img_url,
-                  Post post)
+    public PostImage(String image_name,
+                     String img_url,
+                     Post post)
     {
         this.image_name = image_name;
         this.img_url = img_url;

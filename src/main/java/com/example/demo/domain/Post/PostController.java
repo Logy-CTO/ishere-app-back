@@ -1,8 +1,9 @@
 package com.example.demo.domain.Post;
 
-import com.example.demo.domain.File.ImageUploadDTO;
+import com.example.demo.domain.Image.ImageUploadDTO;
 import com.example.demo.domain.Post.DTO.PostDTO;
 import com.example.demo.domain.Post.DTO.PostPopUpDto;
+import com.example.demo.domain.Post.DTO.PostUpdateDTO;
 import com.example.demo.domain.User.*;
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -91,18 +93,17 @@ public class PostController {
     //한눈에보기 마커 클릭 시 팝업창
     @GetMapping("/popUp")
     public ResponseEntity<PostPopUpDto> getPostPopUp(@RequestBody PostPopUpDto postPopUpDto) {
-        int postId = postPopUpDto.getPostId();
-        return ResponseEntity.ok(postService.getPostPopUp(postId));
+        return ResponseEntity.ok(postService.getPostPopUp(postPopUpDto.getPostId()));
     }
 
     /*
     ----------------------PostMapping------------------------
     */
 
-    //글쓰기
-    @PostMapping("/upload")
-    public ResponseEntity writePost(@RequestBody PostDTO postDTO,
-                                    @RequestBody ImageUploadDTO imageUploadDTO) {
+    @PostMapping(value = "/upload",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity writePost(@RequestPart PostDTO postDTO,
+                                    @RequestPart("files") ImageUploadDTO imageUploadDTO) {
         // SecurityContext에서 Authentication 객체를 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -132,7 +133,7 @@ public class PostController {
     */
 
     @PutMapping("/update")
-    public ResponseEntity updatePost(@RequestBody PostDTO postDTO) {
+    public ResponseEntity updatePost(@RequestBody PostDTO postDTO, PostUpdateDTO postUpdateDTO) {
         // SecurityContext에서 Authentication 객체를 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -142,7 +143,6 @@ public class PostController {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         String phoneNumber = customUserDetails.getUsername();
         String userName = userService.findUserNameByPhoneNumber(phoneNumber);
-        String areaName = userService.findAreaNameByPhoneNumber(phoneNumber);
         int postId = postDTO.getPostId();
 
         try {
@@ -152,8 +152,7 @@ public class PostController {
             }
 
             // 게시글 정보 업데이트
-            postService.updatePost(postId, postDTO.getPostTitle(), postDTO.getDescription(), postDTO.getReward(),
-                    postDTO.getXLoc(), postDTO.getYLoc(), areaName, postDTO.getImmediateCase());
+            postService.updatePost(postId, postUpdateDTO);
 
             return ResponseEntity.ok().build();
 

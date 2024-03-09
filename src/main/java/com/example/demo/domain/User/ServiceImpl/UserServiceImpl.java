@@ -1,10 +1,12 @@
 package com.example.demo.domain.User.ServiceImpl;
 import com.example.demo.domain.Post.PostRepository;
 import com.example.demo.domain.User.*;
+import com.example.demo.domain.User.DTO.SignUpDto;
+import com.example.demo.domain.User.DTO.UpdateDTO;
+import com.example.demo.domain.User.DTO.AreaDto;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -35,12 +37,14 @@ public class UserServiceImpl implements UserService {
 
     //글쓰기 사용자 닉네임 지정
     public String findUserNameByPhoneNumber(String phoneNumber) {
-        User user = userRepository.findByPhoneNumber(phoneNumber);
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         return user.getUserName();
     }
     //글쓰기 사용자 지역 지정
     public String findAreaNameByPhoneNumber(String phoneNumber) {
-        User user = userRepository.findByPhoneNumber(phoneNumber);
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         return user.getAreaName();
     }
 
@@ -48,7 +52,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkPinNumber(String phoneNumber, String pinNumber) {
         // 사용자 이름으로 사용자를 검색합니다.
-        User user = userRepository.findByPhoneNumber(phoneNumber);
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         // 사용자가 존재하지 않거나 핀 번호가 null이면 false를 반환합니다.
         if (user == null || user.getPinNumber() == null) {
@@ -59,38 +64,41 @@ public class UserServiceImpl implements UserService {
         return bCryptPasswordEncoder.matches(pinNumber, user.getPinNumber());
     }
 
+
     //마이페이지 업데이트, user에서 setter를 사용하지 않고 메서드로 수정
     @Override
     @Transactional
-    public User updateProfile(SignUpDto signUpDto) {
-        User user = userRepository.findByPhoneNumber(signUpDto.getPhoneNumber());
+    public User updateProfile(String phoneNumber, UpdateDTO updateDTO) {
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        if (userRepository.existsByUserName(signUpDto.getUserName())) {
-            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
-        }
-        user.updateUserName(signUpDto.getUserName());
-        user.updateBankName(signUpDto.getBankName());
-        user.updateRealName(signUpDto.getRealName());
-        user.updateAccountNumber(signUpDto.getAccountNumber());
+        // user 객체를 업데이트 메서드에 명시적으로 전달
+        user.updateUserFromDto(updateDTO);
 
-        return userRepository.save(user);
+        // 업데이트된 사용자 정보를 저장
+        User updatedUser = userRepository.save(user);
+
+        // 업데이트된 사용자 객체 반환
+        return updatedUser;
     }
-
     //사용자가 관심있는 게시글 추가(좋아요 누르기)
-    public void addInterestPost(String phoneNumber, InterestPostDto interestPostDto) {
-        User user = userRepository.findByPhoneNumber(phoneNumber);
+    public User addInterestPost(String phoneNumber, InterestPostDto interestPostDto) {
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         
         interestPostDto.addInterestPost();
         user.addInterestPost(interestPostDto.getInterestPost());
-        userRepository.save(user);
+        User addedInterstPost = userRepository.save(user);
+        return addedInterstPost;
     }
     //사용자의 지역 변경(게시판 변경)
-    public void updateArea(String phoneNumber, UserAreaDto userAreaDto){
-        User user = userRepository.findByPhoneNumber(phoneNumber);
+    public User updateArea(String phoneNumber, AreaDto areaDto){
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        user.updateArea(userAreaDto.getAreaName());
-        userRepository.save(user);
-
+        user.updateArea(areaDto.getAreaName());
+        User updatedArea = userRepository.save(user);
+        return updatedArea;
     }
 
 

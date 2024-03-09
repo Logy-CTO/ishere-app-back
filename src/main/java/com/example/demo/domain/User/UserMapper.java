@@ -1,7 +1,9 @@
 package com.example.demo.domain.User;
 
+import com.example.demo.domain.User.DTO.SignUpDto;
+import com.example.demo.domain.User.DTO.UpdateDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Mapper(componentModel = "spring")

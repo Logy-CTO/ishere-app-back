@@ -1,5 +1,8 @@
 package com.example.demo.domain.User;
 
+import com.example.demo.domain.User.DTO.SignUpDto;
+import com.example.demo.domain.User.DTO.UpdateDTO;
+import com.example.demo.domain.User.DTO.AreaDto;
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -45,8 +48,8 @@ public class UserController {
     }
 
     //사용자 마이페이지에서 개인정보 수정(닉네임, 은행계좌 정보 -> 나중에 분리해야할듯)
-    @PostMapping("/update")
-    public ResponseEntity<User> updateProfile(@RequestBody SignUpDto signUpDto) {
+    @PutMapping("/update")
+    public ResponseEntity<User> updateProfile(@RequestBody SignUpDto signUpDto,UpdateDTO updateDTO) {
         // SecurityContext에서 Authentication 객체를 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -61,7 +64,7 @@ public class UserController {
         signUpDto.setPhoneNumber(customUserDetails.getUsername());
 
         // 사용자 프로필 업데이트
-        User updatedUser = userService.updateProfile(signUpDto);
+        User updatedUser = userService.updateProfile(customUserDetails.getUsername(), updateDTO);
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -85,18 +88,17 @@ public class UserController {
 */
     //게시판 변경
     @PutMapping("/updateArea")
-    public ResponseEntity<Void> updateArea(@RequestBody UserAreaDto userAreaDto){
+    public ResponseEntity<Void> updateArea(@RequestBody AreaDto areaDto){
         // SecurityContext에서 Authentication 객체를 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
         }
-
         // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         //Username은 phoneNumber로 들어감
-        userService.updateArea(customUserDetails.getUsername(),userAreaDto);
+        userService.updateArea(customUserDetails.getUsername(), areaDto);
         return ResponseEntity.ok().build();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.demo.domain.File;
+package com.example.demo.domain.Image;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -13,6 +13,9 @@ import java.io.IOException;
 public class FtpService {
     @Value("${ftp.server}")
     private String SERVER;
+
+    @Value("${ftp.url}")
+    private String URL;
 
     @Value("${ftp.port}")
     private int PORT;
@@ -53,5 +56,9 @@ public class FtpService {
         } catch (IOException e) {
             e.printStackTrace(); // 예외 처리
         }
+    }
+
+    public String setUrl(){ //정보 숨기기 위한 단순한 함수
+        return URL;
     }
 }
