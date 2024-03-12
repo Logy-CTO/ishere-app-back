@@ -5,6 +5,7 @@ import com.example.demo.domain.Post.DTO.PostUpdateDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Entity
 @Table(name = "post")
 @Getter
@@ -67,8 +69,7 @@ public class Post {
                 String areaName,
                 double xLoc,
                 double yLoc,
-                String userName,
-                List<PostImage> postImages
+                String userName
     )
     {
         this.postId = postId;
@@ -83,8 +84,8 @@ public class Post {
         this.xLoc = xLoc;
         this.yLoc = yLoc;
         this.userName = userName;
-        this.postImages = postImages;
     }
+
     public void addPostImage(PostImage image) {
         postImages.add(image);
         image.setPost(this);

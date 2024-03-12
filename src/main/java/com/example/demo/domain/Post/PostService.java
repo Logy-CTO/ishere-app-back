@@ -12,12 +12,14 @@ import com.example.demo.domain.Post.LocationFind.LocationFindRepository;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import javax.validation.constraints.Null;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,7 +31,7 @@ import java.util.Arrays;
 
 import static com.example.demo.domain.Post.DTO.PostDTO.fromEntity;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -46,16 +48,18 @@ public class PostService {
 
     //글쓰기
     @Transactional
-    public Post writePost(PostDTO postDto, List<MultipartFile> files) {
+    public PostDTO writePost(PostDTO postDto, List<MultipartFile> files) {
         Post post = postDto.toWrite();
-        post = postRepository.save(post);
-
+        postRepository.save(post);
+        PostDTO postDTO =  PostDTO.fromEntity(post, null);
         //이미지 업로드
         if(files != null && !files.isEmpty()) {
+            List<String> imagesURL = new ArrayList<>();
             for (MultipartFile file : files) {
                 String fileName = StringUtils.cleanPath(file.getOriginalFilename());
                 String uniqueFileName = System.currentTimeMillis() + "-" + fileName;
                 System.out.println(uniqueFileName);
+
                 try {
                     // 파일을 업로드할 디렉토리 경로 설정
                     Path uploadPath = Path.of(UPLOAD_DIR);
@@ -79,16 +83,17 @@ public class PostService {
                 PostImage image = PostImage.builder()
                         .image_name(uniqueFileName)
                         .img_url(ftpService.setUrl() + uniqueFileName)  // 민감정보 숨기기
-                        .post(post)
                         .build();
-
+                imagesURL.add(image.getImg_url());
+                log.info("image ={}", image);
                 imageRepository.save(image);
-                post.addPostImage(image);
+              post.addPostImage(image);
             }
-        }
 
+            postDTO = PostDTO.fromEntity(post, imagesURL);
+        }
         // Entity를 DTO로 변환하여 반환
-        return post;
+        return postDTO;
     }
     public List<Post> getPosts() {
         return postRepository.findAll();
