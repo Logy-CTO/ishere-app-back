@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -52,9 +53,8 @@ public class Post {
     private String userName;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @OrderBy("id asc")
-    private List<PostImage> postImages;
-
+    @OrderBy("image_id asc")
+    private List<PostImage> postImages = new ArrayList<>();
     @Builder
     public Post(int postId,
                 String categoryType,
@@ -84,6 +84,10 @@ public class Post {
         this.yLoc = yLoc;
         this.userName = userName;
         this.postImages = postImages;
+    }
+    public void addPostImage(PostImage image) {
+        postImages.add(image);
+        image.setPost(this);
     }
     public void updatePostFromDto(PostUpdateDTO postUpdateDTO) {
         this.postTitle = postUpdateDTO.getPostTitle(); // DTO에서 값을 가져와 현재 객체의 필드를 업데이트

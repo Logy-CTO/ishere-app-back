@@ -50,10 +50,11 @@ public class PostDTO {
                 .xLoc(this.xLoc)
                 .yLoc(this.yLoc)
                 .userName(this.userName)
+
                 .build();
     }
 
-    public PostDTO(Post post){
+    public PostDTO  (Post post){
         this.imageUrls = post.getPostImages().stream().map(PostImage::getImg_url).collect(Collectors.toList());
     }
 
@@ -71,6 +72,7 @@ public class PostDTO {
                 .xLoc(post.getXLoc())
                 .yLoc(post.getYLoc())
                 .userName(post.getUserName())
+                .imageUrls(post.getPostImages().stream().map(PostImage::getImg_url).collect(Collectors.toList()))
                 .build();
     }
 }

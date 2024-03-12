@@ -3,6 +3,7 @@ package com.example.demo.domain.Image;
 import com.example.demo.domain.Post.Post;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,11 +13,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
-    private Long id;
+    private int image_id;
 
     @Column(name = "created_at")
     @CreatedDate

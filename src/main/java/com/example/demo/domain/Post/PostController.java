@@ -7,6 +7,7 @@ import com.example.demo.domain.Post.DTO.PostUpdateDTO;
 import com.example.demo.domain.User.*;
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.Authentication;
 import java.util.List;
@@ -28,9 +32,11 @@ public class PostController {
     private final PostRepository postRepository;
     private final PostService postService;
     private final UserService userService;
+
     /*
     ----------------------GetMapping------------------------
     */
+
     //사용자에게 보여지는 최신 게시글
     @GetMapping("/main/{page}")
     public List<Post> getMainPosts(@PathVariable int page) {
@@ -103,13 +109,14 @@ public class PostController {
     @PostMapping(value = "/upload",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity writePost(@RequestPart PostDTO postDTO,
-                                    @RequestPart("files") ImageUploadDTO imageUploadDTO) {
+                                    @RequestPart List<MultipartFile> files) {
         // SecurityContext에서 Authentication 객체를 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
         }
+
 
         // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -124,7 +131,7 @@ public class PostController {
         postDTO.setAreaName(areaName);
 
         // 게시글 작성
-        return ResponseEntity.ok(postService.writePost(postDTO, imageUploadDTO));
+        return ResponseEntity.ok(postService.writePost(postDTO, files));
     }
     //게시글 수정
 

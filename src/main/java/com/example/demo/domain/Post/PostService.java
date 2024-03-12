@@ -12,10 +12,11 @@ import com.example.demo.domain.Post.LocationFind.LocationFindRepository;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +26,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.Arrays;
+
+import static com.example.demo.domain.Post.DTO.PostDTO.fromEntity;
+
 
 @Service
 @RequiredArgsConstructor
@@ -37,9 +41,55 @@ public class PostService {
     private final LocationFindRepository locationFindRepository;
     private final ImageRepository imageRepository;
     private final FtpService ftpService;
+    @Autowired
+    private EntityManager entityManager;
 
+    //글쓰기
+    @Transactional
+    public Post writePost(PostDTO postDto, List<MultipartFile> files) {
+        Post post = postDto.toWrite();
+        post = postRepository.save(post);
 
+        //이미지 업로드
+        if(files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                String uniqueFileName = System.currentTimeMillis() + "-" + fileName;
+                System.out.println(uniqueFileName);
+                try {
+                    // 파일을 업로드할 디렉토리 경로 설정
+                    Path uploadPath = Path.of(UPLOAD_DIR);
 
+                    // 디렉토리가 없으면 생성
+                    if (!Files.exists(uploadPath)) {
+                        Files.createDirectories(uploadPath);
+                    }
+
+                    // 파일을 지정한 디렉토리로 복사
+                    Path filePath = uploadPath.resolve(uniqueFileName);
+                    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                    // FTP 서버에 파일 업로드 ** 중요 "/home/www/html/images/" 우리 이미지 경로
+                    ftpService.uploadFile(filePath.toString(), "/home/www/html/images/" + uniqueFileName);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                PostImage image = PostImage.builder()
+                        .image_name(uniqueFileName)
+                        .img_url(ftpService.setUrl() + uniqueFileName)  // 민감정보 숨기기
+                        .post(post)
+                        .build();
+
+                imageRepository.save(image);
+                post.addPostImage(image);
+            }
+        }
+
+        // Entity를 DTO로 변환하여 반환
+        return post;
+    }
     public List<Post> getPosts() {
         return postRepository.findAll();
     }
@@ -69,57 +119,7 @@ public class PostService {
 
         return postDTOs;
     }
-    //글쓰기
-    @Transactional
-    public Post writePost(PostDTO postDto, ImageUploadDTO imageUploadDTO) {
-        Post post = postDto.toWrite();
-        post = postRepository.save(post);
 
-        //한눈에 보기 테이블에 post_id와 좌표값 저장
-        LocationFind locationFind = new LocationFind();
-        locationFind.setPostId(post.getPostId());
-        locationFind.setXLoc(post.getXLoc());
-        locationFind.setYLoc(post.getYLoc());
-        locationFind.setImmediateCase(post.getImmediateCase());
-        locationFindRepository.save(locationFind);
-
-
-        //이미지 업로드
-        if(imageUploadDTO.getFiles() != null && !imageUploadDTO.getFiles().isEmpty()) {
-            for (MultipartFile file : imageUploadDTO.getFiles()) {
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-                String uniqueFileName = System.currentTimeMillis() + "-" + fileName;
-                try {
-                    // 파일을 업로드할 디렉토리 경로 설정
-                    Path uploadPath = Path.of(UPLOAD_DIR);
-
-                    // 디렉토리가 없으면 생성
-                    if (!Files.exists(uploadPath)) {
-                        Files.createDirectories(uploadPath);
-                    }
-
-                    // 파일을 지정한 디렉토리로 복사
-                    Path filePath = uploadPath.resolve(uniqueFileName);
-                    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-                    // FTP 서버에 파일 업로드 ** 중요 "/home/www/html/images/" 우리 이미지 경로
-                    ftpService.uploadFile(filePath.toString(), "/home/www/html/images/" + uniqueFileName);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                PostImage image = PostImage.builder()
-                        .image_name(uniqueFileName)
-                        .img_url(ftpService.setUrl() + uniqueFileName)  //민감정보 숨기기
-                        .post(postDto.toWrite())
-                        .build();
-
-                imageRepository.save(image);
-            }
-        }
-        return post;
-    }
 
     public Post findById(int postId) throws Exception {
         return postRepository.findById(postId)
