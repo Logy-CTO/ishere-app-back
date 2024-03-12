@@ -71,6 +71,7 @@ public class Post {
                 double yLoc,
                 String userName
     )
+
     {
         this.postId = postId;
         this.categoryType = categoryType;
