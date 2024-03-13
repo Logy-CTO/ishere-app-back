@@ -1,6 +1,6 @@
 package com.example.demo.domain.Image;
 
-import com.example.demo.domain.Post.Post;
+import com.example.demo.domain.Post.entity.Post;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

@@ -1,4 +1,5 @@
 package com.example.demo.domain.User.ServiceImpl;
+<<<<<<< HEAD
 import com.example.demo.domain.Post.PostRepository;
 import com.example.demo.domain.User.*;
 import com.example.demo.domain.User.DTO.SignUpDto;
@@ -7,6 +8,14 @@ import com.example.demo.domain.User.DTO.AreaDto;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+=======
+import com.example.demo.domain.Post.repository.PostRepository;
+import com.example.demo.domain.User.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+>>>>>>> main
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -81,6 +90,7 @@ public class UserServiceImpl implements UserService {
         // 업데이트된 사용자 객체 반환
         return updatedUser;
     }
+<<<<<<< HEAD
     //사용자가 관심있는 게시글 추가(좋아요 누르기)
     public User addInterestPost(String phoneNumber, InterestPostDto interestPostDto) {
         User user = userRepository.findByPhoneNumber(phoneNumber)
@@ -91,6 +101,9 @@ public class UserServiceImpl implements UserService {
         User addedInterstPost = userRepository.save(user);
         return addedInterstPost;
     }
+=======
+
+>>>>>>> main
     //사용자의 지역 변경(게시판 변경)
     public User updateArea(String phoneNumber, AreaDto areaDto){
         User user = userRepository.findByPhoneNumber(phoneNumber)

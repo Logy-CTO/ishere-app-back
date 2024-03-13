@@ -19,7 +19,6 @@ public abstract class UserMapper {
                 .accountNumber(signUpDto.getAccountNumber() != null ? signUpDto.getAccountNumber() : "")
                 .areaName(signUpDto.getAreaName() != null ? signUpDto.getAreaName() : "서울 종로구")
                 .bankName(signUpDto.getBankName() != null ? signUpDto.getBankName() : "")
-                .interestPost(signUpDto.getInterestPost() != null ? signUpDto.getInterestPost() : "")
                 .phoneNumber(signUpDto.getPhoneNumber())
                 .realName(signUpDto.getRealName() != null ? signUpDto.getRealName() : "")
                 .userName(signUpDto.getUserName())

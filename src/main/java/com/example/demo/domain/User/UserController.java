@@ -1,8 +1,11 @@
 package com.example.demo.domain.User;
 
+<<<<<<< HEAD
 import com.example.demo.domain.User.DTO.SignUpDto;
 import com.example.demo.domain.User.DTO.UpdateDTO;
 import com.example.demo.domain.User.DTO.AreaDto;
+=======
+>>>>>>> main
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -68,21 +71,6 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    //게시글 관심목록추가(좋아요 누르기)
-    @PostMapping("/addInterestPost")
-    public ResponseEntity<Void> addInterestPost(@RequestBody InterestPostDto interestPostDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
-        }
-
-        // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        //customUserDetails.getUsername() -> PhoneNumber임
-        userService.addInterestPost(customUserDetails.getUsername(), interestPostDto);
-        return ResponseEntity.ok().build();
-    }
 /*
     ----------------------PutMapping------------------------
 */

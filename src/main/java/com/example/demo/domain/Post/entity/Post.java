@@ -1,4 +1,4 @@
-package com.example.demo.domain.Post;
+package com.example.demo.domain.Post.entity;
 
 import com.example.demo.domain.Image.PostImage;
 import com.example.demo.domain.Post.DTO.PostUpdateDTO;

@@ -1,4 +1,4 @@
-package com.example.demo.domain.Post;
+package com.example.demo.domain.Post.service;
 
 import com.example.demo.domain.Image.FtpService;
 import com.example.demo.domain.Image.ImageRepository;
@@ -9,7 +9,14 @@ import com.example.demo.domain.Image.PostImage;
 import com.example.demo.domain.Post.DTO.PostUpdateDTO;
 import com.example.demo.domain.Post.LocationFind.LocationFind;
 import com.example.demo.domain.Post.LocationFind.LocationFindRepository;
-import com.example.demo.domain.User.User;
+import com.example.demo.domain.Post.entity.InterestPost;
+import com.example.demo.domain.Post.entity.Post;
+import com.example.demo.domain.Post.dto.PostDTO;
+import com.example.demo.domain.Post.dto.PostMapper;
+import com.example.demo.domain.Post.repository.InterestPostRepository;
+import com.example.demo.domain.Post.repository.PostRepository;
+import com.example.demo.domain.User.InterestPostDto;
+import com.example.demo.domain.User.ServiceImpl.UserServiceImpl;
 import com.example.demo.domain.User.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +28,12 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.constraints.Null;
 import java.io.IOException;
+<<<<<<< HEAD:src/main/java/com/example/demo/domain/Post/PostService.java
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+=======
+>>>>>>> main:src/main/java/com/example/demo/domain/Post/service/PostService.java
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -43,6 +53,7 @@ public class PostService {
     private final LocationFindRepository locationFindRepository;
     private final ImageRepository imageRepository;
     private final FtpService ftpService;
+<<<<<<< HEAD:src/main/java/com/example/demo/domain/Post/PostService.java
     @Autowired
     private EntityManager entityManager;
 
@@ -95,6 +106,10 @@ public class PostService {
         // Entity를 DTO로 변환하여 반환
         return postDTO;
     }
+=======
+    private final InterestPostRepository interestPostRepository;
+    private final UserServiceImpl userService;
+>>>>>>> main:src/main/java/com/example/demo/domain/Post/service/PostService.java
     public List<Post> getPosts() {
         return postRepository.findAll();
     }
@@ -105,11 +120,34 @@ public class PostService {
         return postMapper.postsToPostDTOs(posts);
     }
 
+<<<<<<< HEAD:src/main/java/com/example/demo/domain/Post/PostService.java
     //","스플릿해서 user의 관심게시글 가져오기
     public List<String> getUserInterestPosts(String phoneNumber) {
         User user = userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         return Arrays.asList(user.getInterestPost().split(","));
+=======
+    // 사용자가 관심있는 게시글 추가(좋아요 누르기)
+    public void addInterestPost(String phoneNumber, InterestPostDto interestPostDto) {
+        // 전화번호로 사용자를 확인하고, 사용자 이름을 가져오는 로직이 필요할 것입니다.
+        String userName = userService.findUserNameByPhoneNumber(phoneNumber);
+
+        // InterestPostDto에서 데이터를 가져와서 InterestPost 엔티티를 생성합니다.
+        InterestPost interestPost = new InterestPost();
+        interestPost.setUserName(userName);
+        interestPost.setPostId(Math.toIntExact(interestPostDto.getPostId()));
+
+        // 생성된 InterestPost를 저장합니다.
+        interestPostRepository.save(interestPost);
+    }
+
+    public List<Integer> getUserInterestPosts(String phoneNumber) {
+        String userName = userService.findUserNameByPhoneNumber(phoneNumber);
+        List<InterestPost> interestPosts = interestPostRepository.findByUserName(userName);
+        return interestPosts.stream()
+                .map(InterestPost::getPostId)
+                .collect(Collectors.toList());
+>>>>>>> main:src/main/java/com/example/demo/domain/Post/service/PostService.java
     }
 
     //마이페이지 본인이 작성한 게시글 조회

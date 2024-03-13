@@ -1,9 +1,20 @@
-package com.example.demo.domain.Post;
+package com.example.demo.domain.Post.controller;
 
+<<<<<<< HEAD:src/main/java/com/example/demo/domain/Post/PostController.java
 import com.example.demo.domain.Image.ImageUploadDTO;
 import com.example.demo.domain.Post.DTO.PostDTO;
 import com.example.demo.domain.Post.DTO.PostPopUpDto;
 import com.example.demo.domain.Post.DTO.PostUpdateDTO;
+=======
+import com.example.demo.domain.File.ImageUploadDTO;
+import com.example.demo.domain.Post.entity.Notice;
+import com.example.demo.domain.Post.entity.Post;
+import com.example.demo.domain.Post.dto.PostDTO;
+import com.example.demo.domain.Post.repository.InterestPostRepository;
+import com.example.demo.domain.Post.repository.NoticeRepository;
+import com.example.demo.domain.Post.repository.PostRepository;
+import com.example.demo.domain.Post.service.PostService;
+>>>>>>> main:src/main/java/com/example/demo/domain/Post/controller/PostController.java
 import com.example.demo.domain.User.*;
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +41,7 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostRepository postRepository;
+    private final NoticeRepository noticeRepository;
     private final PostService postService;
     private final UserService userService;
 
@@ -75,17 +87,19 @@ public class PostController {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         String phoneNumber = customUserDetails.getUsername();
 
-        // 사용자의 관심 post ID 리스트를 ","스플릿해서(서비스) 가져오기
-        List<String> interestPosts = postService.getUserInterestPosts(phoneNumber);
+        List<Integer> interestPosts = postService.getUserInterestPosts(phoneNumber);
 
         // post ID 리스트에 해당하는 post들을 한 번의 쿼리로 가져오기
-        List<Integer> postIds = interestPosts.stream()
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
-        List<PostDTO> posts = postService.getPost(postIds);
+        List<PostDTO> posts = postService.getPost(interestPosts);
 
         return ResponseEntity.ok(posts);
     }
+
+    @GetMapping("/notice")
+    public List<Notice> getAllNotices() {
+        return noticeRepository.findAll();
+    }
+
     //게시글 정렬
     @GetMapping("/list")
     public List<Post> getPostList() {
@@ -134,6 +148,22 @@ public class PostController {
         return ResponseEntity.ok(postService.writePost(postDTO, files));
     }
     //게시글 수정
+
+    //게시글 관심목록추가(좋아요 누르기)
+    @PostMapping("/addInterestPost")
+    public ResponseEntity addInterestPost(@RequestBody InterestPostDto interestPostDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
+        }
+
+        // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        //customUserDetails.getUsername() -> PhoneNumber임
+        postService.addInterestPost(customUserDetails.getUsername(), interestPostDto);
+        return ResponseEntity.ok().build();
+    }
 
     /*
     ----------------------PutMapping------------------------
