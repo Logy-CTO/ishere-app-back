@@ -1,11 +1,10 @@
 package com.example.demo.domain.User;
 
-<<<<<<< HEAD
+
 import com.example.demo.domain.User.DTO.SignUpDto;
 import com.example.demo.domain.User.DTO.UpdateDTO;
 import com.example.demo.domain.User.DTO.AreaDto;
-=======
->>>>>>> main
+
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

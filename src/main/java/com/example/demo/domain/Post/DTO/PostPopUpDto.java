@@ -1,7 +1,7 @@
 package com.example.demo.domain.Post.DTO;
 
 
-import com.example.demo.domain.Post.Post;
+import com.example.demo.domain.Post.entity.Post;
 import lombok.*;
 
 @Getter

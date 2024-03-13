@@ -1,20 +1,17 @@
 package com.example.demo.domain.Post.controller;
 
-<<<<<<< HEAD:src/main/java/com/example/demo/domain/Post/PostController.java
+
 import com.example.demo.domain.Image.ImageUploadDTO;
 import com.example.demo.domain.Post.DTO.PostDTO;
 import com.example.demo.domain.Post.DTO.PostPopUpDto;
 import com.example.demo.domain.Post.DTO.PostUpdateDTO;
-=======
-import com.example.demo.domain.File.ImageUploadDTO;
+
 import com.example.demo.domain.Post.entity.Notice;
 import com.example.demo.domain.Post.entity.Post;
-import com.example.demo.domain.Post.dto.PostDTO;
-import com.example.demo.domain.Post.repository.InterestPostRepository;
 import com.example.demo.domain.Post.repository.NoticeRepository;
 import com.example.demo.domain.Post.repository.PostRepository;
 import com.example.demo.domain.Post.service.PostService;
->>>>>>> main:src/main/java/com/example/demo/domain/Post/controller/PostController.java
+
 import com.example.demo.domain.User.*;
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -75,25 +72,8 @@ public class PostController {
     }
 
     //사용자의 관심있는 게시글보기
-    @GetMapping("/interestPost")
-    public ResponseEntity<List<PostDTO>> getPostsByUserInterestPost(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //게시글 관심목록추가(좋아요 누르기)
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
-        }
-
-        // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        String phoneNumber = customUserDetails.getUsername();
-
-        List<Integer> interestPosts = postService.getUserInterestPosts(phoneNumber);
-
-        // post ID 리스트에 해당하는 post들을 한 번의 쿼리로 가져오기
-        List<PostDTO> posts = postService.getPost(interestPosts);
-
-        return ResponseEntity.ok(posts);
-    }
 
     @GetMapping("/notice")
     public List<Notice> getAllNotices() {

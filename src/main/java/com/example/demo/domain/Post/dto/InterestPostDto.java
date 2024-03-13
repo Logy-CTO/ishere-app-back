@@ -1,4 +1,4 @@
-package com.example.demo.domain.Post.dto;
+package com.example.demo.domain.Post.DTO;
 
 import lombok.Data;
 

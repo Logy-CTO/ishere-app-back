@@ -1,12 +1,11 @@
 package com.example.demo.domain.User;
 
-<<<<<<< HEAD
-import com.example.demo.domain.Post.Post;
+
+import com.example.demo.domain.Post.entity.Post;
 import java.util.List;
 
 import com.example.demo.domain.User.DTO.UpdateDTO;
-=======
->>>>>>> main
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -85,8 +84,6 @@ public class User {
         this.bankName = bankName;
         this.accountNumber = accountNumber;
         this.areaName = areaName;
-<<<<<<< HEAD
-        this.interestPost = interestPost;
     }
     //사용자 정보 수정 메서드
     public void updateUserFromDto(UpdateDTO updateDTO) {
@@ -96,15 +93,6 @@ public class User {
         this.realName = updateDTO.getRealName();
     }
     //관심목록 추가 dto
-    public void addInterestPost(String newPostId) {
-        if (this.interestPost == null) {
-            this.interestPost = newPostId;
-        } else {
-            this.interestPost += newPostId;
-        }
-=======
->>>>>>> main
-    }
 
     public User(String phoneNumber, String areaName) {
         this.phoneNumber = phoneNumber;
