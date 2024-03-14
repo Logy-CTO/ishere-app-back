@@ -1,11 +1,15 @@
-package com.example.demo.domain.File;
+package com.example.demo.domain.Image;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ImageUploadDTO {
     private List<MultipartFile> files;
 }

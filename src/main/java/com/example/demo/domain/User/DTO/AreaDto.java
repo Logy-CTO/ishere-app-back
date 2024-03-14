@@ -1,9 +1,10 @@
-package com.example.demo.domain.User;
+package com.example.demo.domain.User.DTO;
 
+import com.example.demo.domain.User.User;
 import lombok.Data;
 
 @Data
-public class UserAreaDto {
+public class AreaDto {
     private String phoneNumber;
     private String areaName;
 

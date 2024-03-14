@@ -1,26 +1,21 @@
-package com.example.demo.domain.Post.dto;
+package com.example.demo.domain.Post.DTO;
+
+import com.example.demo.domain.Image.PostImage;
+import com.example.demo.domain.Post.entity.Post;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
-
-import com.example.demo.domain.Post.entity.Post;
-import lombok.Data;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
-
-import com.example.demo.domain.File.Images;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDTO {
-
     private int postId;
     private String categoryType;
     private String postTitle;
@@ -34,6 +29,7 @@ public class PostDTO {
     private double yLoc;
     private String userName;
     private List<String> imageUrls;
+//   private List<PostImage> postImages;
 
     //글쓰기
     public Post toWrite() {
@@ -53,11 +49,11 @@ public class PostDTO {
                 .build();
     }
 
-    public PostDTO(Post post){
-        this.imageUrls = post.getPostImages().stream().map(Images::getImg_url).collect(Collectors.toList());
+    public PostDTO  (Post post){
+        this.imageUrls = post.getPostImages().stream().map(PostImage::getImg_url).collect(Collectors.toList());
     }
 
-    public static PostDTO fromEntity(Post post) {
+    public static PostDTO fromEntity(Post post, List<String> postImagesURL) {
         return PostDTO.builder()
                 .postId(post.getPostId())
                 .categoryType(post.getCategoryType())
@@ -71,6 +67,7 @@ public class PostDTO {
                 .xLoc(post.getXLoc())
                 .yLoc(post.getYLoc())
                 .userName(post.getUserName())
+                .imageUrls(postImagesURL)
                 .build();
     }
 }

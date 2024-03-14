@@ -1,8 +1,9 @@
-package com.example.demo.domain.File;
+package com.example.demo.domain.Image;
 
 import com.example.demo.domain.Post.entity.Post;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,11 +13,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Images {
+@EntityListeners(AuditingEntityListener.class)
+public class PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
-    private Long id;
+    private int image_id;
 
     @Column(name = "created_at")
     @CreatedDate
@@ -33,9 +35,9 @@ public class Images {
     private Post post;
 
     @Builder
-    public Images(String image_name,
-                  String img_url,
-                  Post post)
+    public PostImage(String image_name,
+                     String img_url,
+                     Post post)
     {
         this.image_name = image_name;
         this.img_url = img_url;

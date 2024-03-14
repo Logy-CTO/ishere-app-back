@@ -1,6 +1,10 @@
 package com.example.demo.domain.User;
 
 
+import com.example.demo.domain.User.DTO.SignUpDto;
+import com.example.demo.domain.User.DTO.UpdateDTO;
+import com.example.demo.domain.User.DTO.AreaDto;
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -15,8 +19,14 @@ public interface UserService {
     //핀번호(결제) 확인
     boolean checkPinNumber(String phoneNumber, String pinNumber);
     //마이페이지 수정
-    User updateProfile(SignUpDto signUpDto);
-    void updateArea(String phoneNumber, UserAreaDto userAreaDto);
+
+    User updateArea(String phoneNumber, AreaDto areaDto);
+    @Transactional
+    User updateProfile(String phoneNumber, UpdateDTO updateDTO);
+
+
+
+
 
 }
 

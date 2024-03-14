@@ -1,4 +1,4 @@
-package com.example.demo.domain.User;
+package com.example.demo.domain.User.DTO;
 import lombok.*;
 
 @Data

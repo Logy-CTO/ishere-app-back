@@ -1,5 +1,11 @@
 package com.example.demo.domain.User;
 
+
+import com.example.demo.domain.Post.entity.Post;
+import java.util.List;
+
+import com.example.demo.domain.User.DTO.UpdateDTO;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +16,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "user")
 @NoArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,28 +74,6 @@ public class User {
         this.pinNumber = pinNumber;
     }
 
-    // ("/update") -> setter를 쓰지 않기 위한 조치
-    public void updateUserName(String userName) {
-        if (userName != null) {
-            this.userName = userName;
-        }
-    }
-    public void updateRealName(String realName) {
-        if (realName != null) {
-            this.realName = realName;
-        }
-    }
-    public void updateBankName(String bankName) {
-        if (bankName != null) {
-            this.bankName = bankName;
-        }
-    }
-
-    public void updateAccountNumber(String accountNumber) {
-        if (accountNumber != null) {
-            this.accountNumber = accountNumber;
-        }
-    }
     //회원가입 Dto
     public User(String userName, String phoneNumber, String password, String role, String realName, String bankName, String accountNumber, String areaName, String interestPost) {
         this.userName = userName;
@@ -100,6 +85,14 @@ public class User {
         this.accountNumber = accountNumber;
         this.areaName = areaName;
     }
+    //사용자 정보 수정 메서드
+    public void updateUserFromDto(UpdateDTO updateDTO) {
+        this.userName = updateDTO.getUserName();
+        this.accountNumber = updateDTO.getAccountNumber();
+        this.bankName = updateDTO.getBankName();
+        this.realName = updateDTO.getRealName();
+    }
+    //관심목록 추가 dto
 
     public User(String phoneNumber, String areaName) {
         this.phoneNumber = phoneNumber;
@@ -109,4 +102,6 @@ public class User {
     public void updateArea(String areaName) {
         this.areaName = areaName;
     }
+
+
 }

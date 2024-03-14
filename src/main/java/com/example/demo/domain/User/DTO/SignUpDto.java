@@ -1,11 +1,14 @@
-package com.example.demo.domain.User;
+package com.example.demo.domain.User.DTO;
 
 import lombok.*;
 
 
-@Data
-//@Data 어노테이션은 @Getter, @Setter, @ToString,
-//@EqualsAndHashCode, @RequiredArgsConstructor,@NoArgsConstructor 등을 포함
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class SignUpDto{
     private String userName;
     private String phoneNumber;
