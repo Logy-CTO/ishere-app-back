@@ -3,10 +3,7 @@ package com.example.demo.domain.Post.service;
 import com.example.demo.domain.Image.FtpService;
 import com.example.demo.domain.Image.ImageRepository;
 
-import com.example.demo.domain.Post.DTO.PostDTO;
-import com.example.demo.domain.Post.DTO.PostUpdateDTO;
-import com.example.demo.domain.Post.DTO.PostMapper;
-import com.example.demo.domain.Post.DTO.PostPopUpDto;
+import com.example.demo.domain.Post.DTO.*;
 import com.example.demo.domain.Image.PostImage;
 
 import com.example.demo.domain.Post.LocationFind.LocationFindRepository;
@@ -17,17 +14,16 @@ import com.example.demo.domain.Post.repository.InterestPostRepository;
 import com.example.demo.domain.Post.repository.PostRepository;
 import com.example.demo.domain.User.InterestPostDto;
 import com.example.demo.domain.User.ServiceImpl.UserServiceImpl;
-import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import javax.persistence.EntityManager;
+
 import javax.transaction.Transactional;
-import javax.validation.constraints.Null;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,8 +31,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.Arrays;
 
 
 @Slf4j
@@ -110,6 +104,24 @@ public class PostService {
     public List<PostDTO> getPost(List<Integer> postIds) {
         List<Post> posts = postRepository.findByPostIdIn(postIds);
         return postMapper.postsToPostDTOs(posts);
+    }
+
+    //전체 페이징처리
+    public Page<PostResponseDTO> allPage(Pageable pageable){
+        return postRepository.findAllOrderByIdDesc(pageable)
+                .map(PostResponseDTO::from);
+    }
+
+    //찾았어요 페이징처리
+    public Page<PostResponseDTO> finderCategoryPage(Pageable pageable){
+        return postRepository.findBycategoryTypeOrderByIdDesc("찾았어요", pageable)
+                .map(PostResponseDTO::from);
+    }
+
+    //찾고있어요 페이징처리
+    public Page<PostResponseDTO> receiveCategoryPage(Pageable pageable){
+        return postRepository.findBycategoryTypeOrderByIdDesc("찾고있어요", pageable)
+                .map(PostResponseDTO::from);
     }
 
     // 사용자가 관심있는 게시글 추가(좋아요 누르기)

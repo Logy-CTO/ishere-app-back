@@ -1,9 +1,9 @@
 package com.example.demo.domain.Post.controller;
 
 
-import com.example.demo.domain.Image.ImageUploadDTO;
 import com.example.demo.domain.Post.DTO.PostDTO;
 import com.example.demo.domain.Post.DTO.PostPopUpDto;
+import com.example.demo.domain.Post.DTO.PostResponseDTO;
 import com.example.demo.domain.Post.DTO.PostUpdateDTO;
 
 import com.example.demo.domain.Post.entity.Notice;
@@ -15,8 +15,6 @@ import com.example.demo.domain.Post.service.PostService;
 import com.example.demo.domain.User.*;
 import com.example.demo.global.security.principal.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -25,12 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.Authentication;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,13 +41,25 @@ public class PostController {
     ----------------------GetMapping------------------------
     */
 
-    //사용자에게 보여지는 최신 게시글
+    //사용자에게 보여지는 최신 게시글 (postid로 내림차순)
     @GetMapping("/main/{page}")
-    public List<Post> getMainPosts(@PathVariable int page) {
-        Pageable pageable = PageRequest.of(page, 10); // 10개의 게시물을 한 페이지에 표시
-        Page<Post> postPage = postRepository.findAll(pageable);
-        return postPage.getContent();
+    public List<PostResponseDTO> getMainPosts(@PathVariable int page) {
+        Pageable pageable = PageRequest.of(page, 30); // 30개의 게시물을 한 페이지에 표시
+        return postService.allPage(pageable).getContent();
     }
+    //찾았어요 최근 게시물 페이징 (postid로 내림차순)
+    @GetMapping("/finder/{page}")
+    public List<PostResponseDTO> getfinderPosts(@PathVariable int page) {
+        Pageable pageable = PageRequest.of(page, 30); // 30개의 게시물을 한 페이지에 표시
+        return postService.finderCategoryPage(pageable).getContent();
+    }
+    //찾고있어요 최근 게시물 페이징 (postid로 내림차순)
+    @GetMapping("/receive/{page}")
+    public List<PostResponseDTO> getreceivePosts(@PathVariable int page) {
+        Pageable pageable = PageRequest.of(page, 30); // 30개의 게시물을 한 페이지에 표시
+        return postService.receiveCategoryPage(pageable).getContent();
+    }
+
     //사용자가 쓴 게시글 조회
     @GetMapping("/mypage")
     public ResponseEntity<List<Post>> getPostsByUserName(PostDTO postDTO){
