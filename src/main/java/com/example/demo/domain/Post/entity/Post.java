@@ -2,6 +2,9 @@ package com.example.demo.domain.Post.entity;
 
 import com.example.demo.domain.Image.PostImage;
 import com.example.demo.domain.Post.DTO.PostUpdateDTO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,6 +59,7 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @OrderBy("image_id asc")
+    @JsonManagedReference
     private List<PostImage> postImages = new ArrayList<>();
     @Builder
     public Post(int postId,

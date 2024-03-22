@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .antMatchers("/login", "/", "/join","/locationFind","/verifyForLogin","/SendForLogin",
 
                                 "/smstest.html","/user/login","/sendSMS","/verifySMS","/user/register","/session","/loginuser"
-                        ,"/refresh","/test","/area/**","/board/popUp","board/upload").permitAll() // 특정 URL 패턴은 모두 허용
+                        ,"/refresh","/test","/area/**","/board/**","board/upload").permitAll() // 특정 URL 패턴은 모두 허용
 
                         .antMatchers("/admin").hasRole("ADMIN") // /admin URL은 ADMIN 역할을 가진 사용자에게만 허용
                         .anyRequest().authenticated() // 나머지 모든 요청은 인증된 사용자에게만 허용

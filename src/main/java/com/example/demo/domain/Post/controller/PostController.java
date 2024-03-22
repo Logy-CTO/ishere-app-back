@@ -55,7 +55,7 @@ public class PostController {
     }
     //사용자가 쓴 게시글 조회
     @GetMapping("/mypage")
-    public ResponseEntity<List<PostDTO>> getPostsByUserName(PostDTO postDTO){
+    public ResponseEntity<List<Post>> getPostsByUserName(PostDTO postDTO){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -71,7 +71,30 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostsByUserName(userName));
     }
 
-    //사용자의 관심있는 게시글보기
+    //사용자의 관심목록 게시글 확인
+    @GetMapping("interestPost")
+    public ResponseEntity<List<Post>> getPostsByUserInterestPost(PostDTO postDTO){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인을 진행해주세요");
+        }
+
+        // 인증된 사용자의 정보를 CustomUserDetails로 캐스팅
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        String phoneNumber = customUserDetails.getUsername();
+        String userName = userService.findUserNameByPhoneNumber(phoneNumber);
+
+        return  ResponseEntity.ok(postService.getPostsByUserInterestPost(userName));
+    }
+    //게시글 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<Post> getPost(@PathVariable int postId) throws Exception {
+        return ResponseEntity.ok(postService.findById(postId));
+    }
+
+
+
     //게시글 관심목록추가(좋아요 누르기)
 
 
@@ -148,7 +171,7 @@ public class PostController {
     /*
     ----------------------PutMapping------------------------
     */
-
+    //게시글 수정
     @PutMapping("/update")
     public ResponseEntity updatePost(@RequestBody PostDTO postDTO, PostUpdateDTO postUpdateDTO) {
         // SecurityContext에서 Authentication 객체를 가져오기

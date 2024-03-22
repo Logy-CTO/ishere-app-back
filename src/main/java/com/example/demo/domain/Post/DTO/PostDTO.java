@@ -70,4 +70,5 @@ public class PostDTO {
                 .imageUrls(postImagesURL)
                 .build();
     }
+
 }

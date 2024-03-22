@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
@@ -111,67 +112,71 @@ public class PostService {
         return postMapper.postsToPostDTOs(posts);
     }
 
-        // 사용자가 관심있는 게시글 추가(좋아요 누르기)
-        public void addInterestPost(String phoneNumber, InterestPostDto interestPostDto) {
-            // 전화번호로 사용자를 확인하고, 사용자 이름을 가져오는 로직이 필요할 것입니다.
-            // 여기서는 가정적으로 사용자 이름을 "phoneNumber"로 설정합니다.
-            String userName = phoneNumber;
+    // 사용자가 관심있는 게시글 추가(좋아요 누르기)
+    public void addInterestPost(String phoneNumber, InterestPostDto interestPostDto) {
 
-            // InterestPostDto에서 데이터를 가져와서 InterestPost 엔티티를 생성합니다.
-            InterestPost interestPost = new InterestPost();
-            interestPost.setUserName(userName);
-            interestPost.setPostId(Math.toIntExact(interestPostDto.getPostId()));
+        String userName = phoneNumber;
 
-            // 생성된 InterestPost를 저장합니다.
-            interestPostRepository.save(interestPost);
-        }
+        InterestPost interestPost = new InterestPost();
+        interestPost.setUserName(userName);
+        interestPost.setPostId(Math.toIntExact(interestPostDto.getPostId()));
+
+
+        interestPostRepository.save(interestPost);
+    }
 
         //마이페이지 본인이 작성한 게시글 조회
-        public List<PostDTO> getPostsByUserName (String userName){
-            List<Post> posts = postRepository.findByUserName(userName);
-            List<PostDTO> postDTOs = new ArrayList<>();
+    public List<Post> getPostsByUserName(String userName) {
+        List<Post> posts = postRepository.findByUserName(userName);
+        return posts;
+    }
+    //마이페이지 사용자의 관심목록 확인
+    public List<Post> getPostsByUserInterestPost(String userName) {
+        List<InterestPost> interestPosts = interestPostRepository.findByUserName(userName);
 
-            for (Post post : posts) {
-                PostDTO postDTO = postMapper.toDto(post);
-                postDTOs.add(postDTO);
-            }
+        List<Post> posts = new ArrayList<>();
 
-            return postDTOs;
+        for (InterestPost interestPost : interestPosts) {
+            int postId = interestPost.getPostId();
+            Optional<Post> optionalPost = postRepository.findById(postId);
+            optionalPost.ifPresent(posts::add);
         }
 
+        return posts;
+    }
 
     public Post findById (int postId) throws Exception {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new Exception("해당 게시글을 찾을 수 없습니다. id=" + postId));
     }
 
-        //게시글 수정(올바른 수정내역을 위하여 엔티티 반환)
-        @Transactional
-        public Post updatePost (int postId, PostUpdateDTO postUpdateDTO){
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다. id=" + postId));
+    //게시글 수정(올바른 수정내역을 위하여 엔티티 반환)
+    @Transactional
+    public Post updatePost (int postId, PostUpdateDTO postUpdateDTO){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다. id=" + postId));
 
-            post.updatePostFromDto(postUpdateDTO);
-            Post updatedPost = postRepository.save(post);
-            return updatedPost;
-        }
-        //게시글 삭제
-        //delete는 반환값이 없으므로 void를 사용.
-        @Transactional
-        public void deletePost (int postId) throws Exception {
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new Exception("해당 게시글을 찾을 수 없습니다. id=" + postId));
+        post.updatePostFromDto(postUpdateDTO);
+        Post updatedPost = postRepository.save(post);
+        return updatedPost;
+    }
+    //게시글 삭제
+    //delete는 반환값이 없으므로 void를 사용.
+    @Transactional
+    public void deletePost (int postId) throws Exception {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new Exception("해당 게시글을 찾을 수 없습니다. id=" + postId));
 
-            postRepository.delete(post);
-        }
-        //post의 DTO를 반환(필요한 정보만)
-        public PostPopUpDto getPostPopUp (int postId){
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + postId));
+        postRepository.delete(post);
+    }
+    //post의 DTO를 반환(필요한 정보만)
+    public PostPopUpDto getPostPopUp (int postId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id=" + postId));
 
-            // 주입받은 매퍼를 사용하여 변환
-            return postMapper.postToPostPopUpDto(post);
-        }
+        // 주입받은 매퍼를 사용하여 변환
+        return postMapper.postToPostPopUpDto(post);
+    }
 
     }
 
