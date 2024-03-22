@@ -4,7 +4,6 @@ import com.example.demo.domain.Post.entity.Post;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Builder
