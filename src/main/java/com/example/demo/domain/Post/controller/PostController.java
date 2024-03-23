@@ -48,16 +48,16 @@ public class PostController {
         return postService.allPage(pageable).getContent();
     }
     //찾았어요 최근 게시물 페이징 (postid로 내림차순)
-    @GetMapping("/finder/{page}")
-    public List<PostResponseDTO> getfinderPosts(@PathVariable int page) {
+    @GetMapping("/found/{page}")
+    public List<PostResponseDTO> getFoundPosts(@PathVariable int page) {
         Pageable pageable = PageRequest.of(page, 30); // 30개의 게시물을 한 페이지에 표시
-        return postService.finderCategoryPage(pageable).getContent();
+        return postService.foundCategoryPage(pageable).getContent();
     }
     //찾고있어요 최근 게시물 페이징 (postid로 내림차순)
-    @GetMapping("/receive/{page}")
-    public List<PostResponseDTO> getreceivePosts(@PathVariable int page) {
+    @GetMapping("/find/{page}")
+    public List<PostResponseDTO> getFindPosts(@PathVariable int page) {
         Pageable pageable = PageRequest.of(page, 30); // 30개의 게시물을 한 페이지에 표시
-        return postService.receiveCategoryPage(pageable).getContent();
+        return postService.findCategoryPage(pageable).getContent();
     }
 
     //사용자가 쓴 게시글 조회

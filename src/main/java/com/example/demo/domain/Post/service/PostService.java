@@ -108,19 +108,19 @@ public class PostService {
 
     //전체 페이징처리
     public Page<PostResponseDTO> allPage(Pageable pageable){
-        return postRepository.findAllOrderByIdDesc(pageable)
+        return postRepository.findAllByOrderByPostIdDesc(pageable)
                 .map(PostResponseDTO::from);
     }
 
     //찾았어요 페이징처리
-    public Page<PostResponseDTO> finderCategoryPage(Pageable pageable){
-        return postRepository.findBycategoryTypeOrderByIdDesc("찾았어요", pageable)
+    public Page<PostResponseDTO> foundCategoryPage(Pageable pageable){
+        return postRepository.findByCategoryTypeOrderByPostIdDesc("찾았어요", pageable)
                 .map(PostResponseDTO::from);
     }
 
     //찾고있어요 페이징처리
-    public Page<PostResponseDTO> receiveCategoryPage(Pageable pageable){
-        return postRepository.findBycategoryTypeOrderByIdDesc("찾고있어요", pageable)
+    public Page<PostResponseDTO> findCategoryPage(Pageable pageable){
+       return postRepository.findByCategoryTypeOrderByPostIdDesc("찾고 있어요", pageable)
                 .map(PostResponseDTO::from);
     }
 
